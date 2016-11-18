@@ -32,9 +32,9 @@
   },
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
-    "Microsoft.EntityFrameworkCore.AutoHistory": "1.0.0-*",
-    "Microsoft.EntityFrameworkCore": "1.1.0-*",
-    "Microsoft.EntityFrameworkCore.Relational": "1.1.0-*"
+    "Microsoft.EntityFrameworkCore.AutoHistory": "1.0.0",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Relational": "1.1.0"
   },
   "frameworks": {
     "net46": {
