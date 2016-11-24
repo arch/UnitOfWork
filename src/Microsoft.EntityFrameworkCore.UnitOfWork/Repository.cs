@@ -12,7 +12,7 @@ namespace Microsoft.EntityFrameworkCore {
     /// Represents a default generic repository implements the <see cref="IRepository{TEntity}"/> interface.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    internal class Repository<TEntity> : IRepository<TEntity> where TEntity : class {
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class {
         private readonly DbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
 
