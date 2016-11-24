@@ -37,11 +37,7 @@
     "Microsoft.EntityFrameworkCore.Relational": "1.1.0"
   },
   "frameworks": {
-    "net46": {
-
-    },
     "netstandard1.6": {
-
     }
   }
 }
