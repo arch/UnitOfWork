@@ -96,9 +96,7 @@ namespace Microsoft.EntityFrameworkCore {
                 _context.EnsureAutoHistory();
             }
 
-            var count = await _context.SaveChangesAsync();
-
-            return count;
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

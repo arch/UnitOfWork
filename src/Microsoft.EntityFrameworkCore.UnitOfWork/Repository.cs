@@ -69,10 +69,10 @@ namespace Microsoft.EntityFrameworkCore {
             await _dbSet.AddAsync(entity);
 
             // Shadow properties?
-            var property = _dbContext.Entry(entity).Property("Created");
-            if (property != null) {
-                property.CurrentValue = DateTime.Now;
-            }
+            //var property = _dbContext.Entry(entity).Property("Created");
+            //if (property != null) {
+                //property.CurrentValue = DateTime.Now;
+            //}
         }
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace Microsoft.EntityFrameworkCore {
             _dbSet.Update(entity);
 
             // Shadow properties?
-            var property = _dbContext.Entry(entity).Property("LastUpdated");
-            if(property != null) {
-                property.CurrentValue = DateTime.Now;
-            }
+            //var property = _dbContext.Entry(entity).Property("LastUpdated");
+            //if(property != null) {
+                //property.CurrentValue = DateTime.Now;
+            //}
         }
 
         /// <summary>
@@ -136,6 +136,7 @@ namespace Microsoft.EntityFrameworkCore {
         public void Delete(object id) {
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
+            // REVIEW: using metedata to find the key rather than use hardcode 'id'
             var property = typeInfo.GetProperty("Id");
             if (property != null) {
                 var entity = Activator.CreateInstance<TEntity>();
