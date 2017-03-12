@@ -1,4 +1,4 @@
-﻿// Copyright (c) love.net team. All rights reserved.
+﻿// Copyright (c) Arch team. All rights reserved.
 
 using System;
 using System.Collections.Generic;
