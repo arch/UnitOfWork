@@ -10,10 +10,10 @@
     <AssemblyName>Microsoft.EntityFrameworkCore.UnitOfWork</AssemblyName>
     <PackageId>Microsoft.EntityFrameworkCore.UnitOfWork</PackageId>
     <PackageTags>Entity Framework Core;entity-framework-core;EF;Data;O/RM;unitofwork;Unit Of Work;unit-of-work</PackageTags>
-    <PackageProjectUrl>https://github.com/lovedotnet/UnitOfWork</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/lovedotnet/UnitOfWork/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/arch/UnitOfWork</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/arch/UnitOfWork/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/lovedotnet/UnitOfWork.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/arch/UnitOfWork.git</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
