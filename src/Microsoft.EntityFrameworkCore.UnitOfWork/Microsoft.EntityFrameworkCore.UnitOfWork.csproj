@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.</Description>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.1.1</VersionPrefix>
     <Authors>rigofunc;rigofunc@outlook.com;lotosbin;lotosbin@gmail.com</Authors>
-    <TargetFrameworks>net46;netstandard1.6.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6.1</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -17,7 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="1.1.1" />
   </ItemGroup>
