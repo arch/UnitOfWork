@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Microsoft.EntityFrameworkCore {
@@ -45,6 +47,37 @@ namespace Microsoft.EntityFrameworkCore {
         /// </summary>
         /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
         public TContext DbContext => _context;
+
+        /// <summary>
+        /// Changes the database name. This require the databases in the same machine.
+        /// </summary>
+        /// <param name="database">The database name.</param>
+        /// <remarks>
+        /// This only been used for supporting multiple databases in the same model. This require the databases in the same machine.
+        /// </remarks>
+        public void ChangeDatabase(string database)
+        {
+            if (_context.Model.Relational() is RelationalModelAnnotations relational)
+            {
+                relational.DatabaseName = database;
+            }
+
+            var connection = _context.Database.GetDbConnection();
+            if (connection.State.HasFlag(ConnectionState.Open))
+            {
+                connection.ChangeDatabase(database);
+            }
+
+            // Following code only working for mysql.
+            var items = _context.Model.GetEntityTypes();
+            foreach (var item in items)
+            {
+                if (item.Relational() is RelationalEntityTypeAnnotations extensions)
+                {
+                    extensions.Schema = database;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.

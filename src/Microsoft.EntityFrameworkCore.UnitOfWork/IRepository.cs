@@ -4,14 +4,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.EntityFrameworkCore {
     /// <summary>
-    /// Defines the interface(s) for generic repository.
+    /// Defines the interfaces for generic repository.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public interface IRepository<TEntity> where TEntity : class {
+    public interface IRepository<TEntity> where TEntity : class
+    {
+        /// <summary>
+        /// Changes the table name. This require the tables in the same database.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <remarks>
+        /// This only been used for supporting multiple tables in the same model. This require the tables in the same database.
+        /// </remarks>
+        void ChangeTable(string table);
+
         /// <summary>
         /// Filters a sequence of values based on a predicate. This method default no-tracking query.
         /// </summary>
@@ -33,29 +44,64 @@ namespace Microsoft.EntityFrameworkCore {
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        /// <returns>The found entity or null.</returns>
+        TEntity Find(params object[] keyValues);
+
+        /// <summary>
+        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
         Task<TEntity> FindAsync(params object[] keyValues);
+
+        /// <summary>
+        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Inserts a new entity synchronously.
+        /// </summary>
+        /// <param name="entity">The entity to insert.</param>
+        void Insert(TEntity entity);
+
+        /// <summary>
+        /// Inserts a range of entities synchronously.
+        /// </summary>
+        /// <param name="entities">The entities to insert.</param>
+        void Insert(params TEntity[] entities);
+
+        /// <summary>
+        /// Inserts a range of entities synchronously.
+        /// </summary>
+        /// <param name="entities">The entities to insert.</param>
+        void Insert(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Inserts a new entity asynchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous insert operation.</returns>
-        Task InsertAsync(TEntity entity);
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        /// <returns>Task.</returns>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
         Task InsertAsync(params TEntity[] entities);
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous insert operation.</returns>
-        Task InsertAsync(IEnumerable<TEntity> entities);
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Updates the specified entity.

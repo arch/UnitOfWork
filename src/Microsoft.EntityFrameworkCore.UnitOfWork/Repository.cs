@@ -5,14 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Microsoft.EntityFrameworkCore {
     /// <summary>
     /// Represents a default generic repository implements the <see cref="IRepository{TEntity}"/> interface.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class {
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    {
         private readonly DbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
 
@@ -24,6 +27,21 @@ namespace Microsoft.EntityFrameworkCore {
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _dbSet = _dbContext.Set<TEntity>();
+        }
+
+        /// <summary>
+        /// Changes the table name. This require the tables in the same database.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <remarks>
+        /// This only been used for supporting multiple tables in the same model. This require the tables in the same database.
+        /// </remarks>
+        public void ChangeTable(string table)
+        {
+            if (_dbContext.Model.FindEntityType(typeof(TEntity)).Relational() is RelationalEntityTypeAnnotations relational)
+            {
+                relational.TableName = table;
+            }
         }
 
         /// <summary>
@@ -57,21 +75,59 @@ namespace Microsoft.EntityFrameworkCore {
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public async Task<TEntity> FindAsync(params object[] keyValues) => await _dbSet.FindAsync(keyValues);
+        /// <returns>The found entity or null.</returns>
+        public TEntity Find(params object[] keyValues) => _dbSet.Find(keyValues);
+
+        /// <summary>
+        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
+        public Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+
+        /// <summary>
+        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        public Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+
+        /// <summary>
+        /// Inserts a new entity synchronously.
+        /// </summary>
+        /// <param name="entity">The entity to insert.</param>
+        public void Insert(TEntity entity)
+        {
+            var entry = _dbSet.Add(entity);
+        }
+
+        /// <summary>
+        /// Inserts a range of entities synchronously.
+        /// </summary>
+        /// <param name="entities">The entities to insert.</param>
+        public void Insert(params TEntity[] entities) => _dbSet.AddRange(entities);
+
+        /// <summary>
+        /// Inserts a range of entities synchronously.
+        /// </summary>
+        /// <param name="entities">The entities to insert.</param>
+        public void Insert(IEnumerable<TEntity> entities) => _dbSet.AddRange(entities);
 
         /// <summary>
         /// Inserts a new entity asynchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public async Task InsertAsync(TEntity entity) {
-            await _dbSet.AddAsync(entity);
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        public Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _dbSet.AddAsync(entity, cancellationToken);
 
             // Shadow properties?
             //var property = _dbContext.Entry(entity).Property("Created");
             //if (property != null) {
-                //property.CurrentValue = DateTime.Now;
+            //property.CurrentValue = DateTime.Now;
             //}
         }
 
@@ -80,28 +136,28 @@ namespace Microsoft.EntityFrameworkCore {
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
         /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public async Task InsertAsync(params TEntity[] entities) => await _dbSet.AddRangeAsync(entities);
+        public Task InsertAsync(params TEntity[] entities) => _dbSet.AddRangeAsync(entities);
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public async Task InsertAsync(IEnumerable<TEntity> entities) {
-            await _dbSet.AddRangeAsync(entities);
-        }
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        public Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddRangeAsync(entities, cancellationToken);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public void Update(TEntity entity) {
+        public void Update(TEntity entity)
+        {
             _dbSet.Update(entity);
 
             // Shadow properties?
             //var property = _dbContext.Entry(entity).Property("LastUpdated");
             //if(property != null) {
-                //property.CurrentValue = DateTime.Now;
+            //property.CurrentValue = DateTime.Now;
             //}
         }
 
@@ -109,25 +165,19 @@ namespace Microsoft.EntityFrameworkCore {
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Update(params TEntity[] entities) {
-            _dbSet.UpdateRange(entities);
-        }
+        public void Update(params TEntity[] entities) => _dbSet.UpdateRange(entities);
 
         /// <summary>
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Update(IEnumerable<TEntity> entities) {
-            _dbSet.UpdateRange(entities);
-        }
+        public void Update(IEnumerable<TEntity> entities) => _dbSet.UpdateRange(entities);
 
         /// <summary>
         /// Deletes the specified entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        public void Delete(TEntity entity) {
-            _dbSet.Remove(entity);
-        }
+        public void Delete(TEntity entity) => _dbSet.Remove(entity);
 
         /// <summary>
         /// Deletes the entity by the specified primary key.
@@ -159,16 +209,12 @@ namespace Microsoft.EntityFrameworkCore {
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Delete(params TEntity[] entities) {
-            _dbSet.RemoveRange(entities);
-        }
+        public void Delete(params TEntity[] entities) => _dbSet.RemoveRange(entities);
 
         /// <summary>
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Delete(IEnumerable<TEntity> entities) {
-            _dbSet.RemoveRange(entities);
-        }
+        public void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
     }
 }

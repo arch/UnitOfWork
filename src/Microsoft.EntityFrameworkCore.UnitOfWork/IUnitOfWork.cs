@@ -10,6 +10,15 @@ namespace Microsoft.EntityFrameworkCore {
     /// </summary>
     public interface IUnitOfWork : IDisposable {
         /// <summary>
+        /// Changes the database name. This require the databases in the same machine.
+        /// </summary>
+        /// <param name="database">The database name.</param>
+        /// <remarks>
+        /// This only been used for supporting multiple databases in the same model. This require the databases in the same machine.
+        /// </remarks>
+        void ChangeDatabase(string database);
+
+        /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
