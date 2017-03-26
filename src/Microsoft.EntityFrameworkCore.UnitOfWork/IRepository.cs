@@ -13,20 +13,13 @@ namespace Microsoft.EntityFrameworkCore {
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public interface IRepository<TEntity> where TEntity : class {
         /// <summary>
-        /// Filters a sequence of values based on a predicate. This method is no-tracking query.
+        /// Filters a sequence of values based on a predicate. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <returns>An <see cref="IQueryable{T}"/> that contains elements that satisfy the condition specified by predicate.</returns>
-        /// <remarks>This method is no-tracking query.</remarks>
-        IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate);
-
-        /// <summary>
-        /// Filters a sequence of values based on a predicate. This method will change tracking by context.
-        /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <returns>An <see cref="IQueryable{T}"/> that contains elements that satisfy the condition specified by predicate.</returns>
-        /// <remarks>This method will change tracking by context.</remarks>
-        IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>This method default no-tracking query.</remarks>
+        IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true);
 
         /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.

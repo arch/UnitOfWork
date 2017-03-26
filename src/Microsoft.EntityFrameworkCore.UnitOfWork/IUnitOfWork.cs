@@ -10,18 +10,11 @@ namespace Microsoft.EntityFrameworkCore {
     /// </summary>
     public interface IUnitOfWork : IDisposable {
         /// <summary>
-        /// Gets the specified type context.
-        /// </summary>
-        /// <typeparam name="TContext">The type of the context.</typeparam>
-        /// <returns>An instance of type <typeparamref name="TContext"/> or null if the inner context isn't compatibility with <typeparamref name="TContext"/>.</returns>
-        TContext Context<TContext>() where TContext : DbContext;
-
-        /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        IRepository<TEntity> Repository<TEntity>() where TEntity : class;
+        IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
 
         /// <summary>
         /// Saves all changes made in this context to the database.

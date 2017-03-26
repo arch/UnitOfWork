@@ -11,7 +11,7 @@ namespace Microsoft.EntityFrameworkCore {
     /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
     /// </summary>
     /// <typeparam name="TContext">The type of the db context.</typeparam>
-    public class UnitOfWork<TContext> : IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext {
+    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext {
         private readonly TContext _context;
         private bool disposed = false;
         private Dictionary<Type, object> repositories;
@@ -20,36 +20,47 @@ namespace Microsoft.EntityFrameworkCore {
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public UnitOfWork(TContext context) {
-            if (context == null) {
-                throw new ArgumentNullException(nameof(context));
-            }
+        public UnitOfWork(TContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
 
-            // ?
-            //context.Database.EnsureCreated();
+            //var connection = _context.Database.GetDbConnection();
+            //if (_context.Model.Relational() is RelationalModelAnnotations relational)
+            //{
+            //    relational.DatabaseName = connection.Database;
+            //}
 
-            _context = context;
+            //var items = _context.Model.GetEntityTypes();
+            //foreach (var item in items)
+            //{
+            //    if (item.Relational() is RelationalEntityTypeAnnotations extensions)
+            //    {
+            //        extensions.Schema = connection.Database;
+            //    }
+            //}
         }
 
         /// <summary>
-        /// Gets the specified type context.
+        /// Gets the db context.
         /// </summary>
-        /// <typeparam name="T">The type of the context.</typeparam>
-        /// <returns>An instance of type <typeparamref name="T" /> or null if the inner context isn't compatibility with <typeparamref name="T" />.</returns>
-        public T Context<T>() where T : DbContext => _context as T;
+        /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
+        public TContext DbContext => _context;
 
         /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        public IRepository<TEntity> Repository<TEntity>() where TEntity : class {
-            if (repositories == null) {
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        {
+            if (repositories == null)
+            {
                 repositories = new Dictionary<Type, object>();
             }
 
             var type = typeof(TEntity);
-            if (!repositories.ContainsKey(type)) {
+            if (!repositories.ContainsKey(type))
+            {
                 repositories[type] = new Repository<TEntity>(_context);
             }
 
@@ -109,9 +120,11 @@ namespace Microsoft.EntityFrameworkCore {
             // TransactionScope will be included in .NET Core v1.2
             using (var transaction = _context.Database.BeginTransaction()) {
                 try {
-                    int count = 0;
-                    foreach (var uow in unitOfWorks) {
-                        uow.Context<DbContext>().Database.UseTransaction(transaction.GetDbTransaction());
+                    var count = 0;
+                    foreach (var unitOfWork in unitOfWorks)
+                    {
+                        var uow = unitOfWork as UnitOfWork<DbContext>;
+                        uow.DbContext.Database.UseTransaction(transaction.GetDbTransaction());
                         count += await uow.SaveChangesAsync(ensureAutoHistory);
                     }
 

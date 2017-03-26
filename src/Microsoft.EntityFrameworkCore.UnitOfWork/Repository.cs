@@ -20,30 +20,30 @@ namespace Microsoft.EntityFrameworkCore {
         /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public Repository(DbContext dbContext) {
-            if (dbContext == null) {
-                throw new ArgumentNullException(nameof(dbContext));
-            }
-
-            _dbContext = dbContext;
+        public Repository(DbContext dbContext)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _dbSet = _dbContext.Set<TEntity>();
         }
 
         /// <summary>
-        /// Filters a sequence of values based on a predicate. This method is no-tracking query.
+        /// Filters a sequence of values based on a predicate. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by predicate.</returns>
-        /// <remarks>This method is no-tracking query.</remarks>
-        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate) => _dbSet.AsNoTracking().Where(predicate);
-
-        /// <summary>
-        /// Filters a sequence of values based on a predicate. This method will change tracking by context.
-        /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by predicate.</returns>
-        /// <remarks>This method will change tracking by context.</remarks>
-        public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate) => _dbSet.Where(predicate);
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that contains elements that satisfy the condition specified by predicate.</returns>
+        /// <remarks>This method default no-tracking query.</remarks>
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true)
+        {
+            if (disableTracking)
+            {
+                return _dbSet.AsNoTracking().Where(predicate);
+            }
+            else
+            {
+                return _dbSet.Where(predicate);
+            }
+        }
 
         /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.
@@ -133,19 +133,23 @@ namespace Microsoft.EntityFrameworkCore {
         /// Deletes the entity by the specified primary key.
         /// </summary>
         /// <param name="id">The primary key value.</param>
-        public void Delete(object id) {
+        public void Delete(object id)
+        {
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
-            // REVIEW: using metedata to find the key rather than use hardcode 'id'
-            var property = typeInfo.GetProperty("Id");
-            if (property != null) {
+            var key = _dbContext.Model.FindEntityType(typeInfo.Name).FindPrimaryKey().Properties.FirstOrDefault();
+            var property = typeInfo.GetProperty(key?.Name);
+            if (property != null)
+            {
                 var entity = Activator.CreateInstance<TEntity>();
                 property.SetValue(entity, id);
                 _dbContext.Entry(entity).State = EntityState.Deleted;
             }
-            else {
+            else
+            {
                 var entity = _dbSet.Find(id);
-                if (entity != null) {
+                if (entity != null)
+                {
                     Delete(entity);
                 }
             }
