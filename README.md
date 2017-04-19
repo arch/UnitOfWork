@@ -1,6 +1,11 @@
 # UnitOfWork
 A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.
 
+## Support MySQL multiple databases/tables sharding
+
+After [v1.1.2](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.UnitOfWork/1.1.2) had support MySQL multiple databases/tables sharding in the same model. 
+You can use [Pomelo.EntityFrameworkCore.MySql](https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql) to test this feature. @[PomeloFoundation](https://github.com/PomeloFoundation)
+
 # Quickly start
 
 ## How to use UnitOfWork
