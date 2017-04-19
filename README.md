@@ -57,7 +57,7 @@ public ValuesController(IUnitOfWork unitOfWork)
 
     unitOfWork.SaveChanges();
 
-    var find = userRepo.Get(user.UserId);
+    var find = userRepo.Find(user.UserId);
 
     find.Password = "p@ssword";
 
