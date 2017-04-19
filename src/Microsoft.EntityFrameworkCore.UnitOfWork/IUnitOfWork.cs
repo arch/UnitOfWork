@@ -4,13 +4,15 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Microsoft.EntityFrameworkCore {
+namespace Microsoft.EntityFrameworkCore
+{
     /// <summary>
     /// Defines the interface(s) for unit of work.
     /// </summary>
-    public interface IUnitOfWork : IDisposable {
+    public interface IUnitOfWork : IDisposable
+    {
         /// <summary>
-        /// Changes the database name. This require the databases in the same machine.
+        /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
         /// </summary>
         /// <param name="database">The database name.</param>
         /// <remarks>

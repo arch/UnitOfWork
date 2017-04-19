@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Microsoft.EntityFrameworkCore {
+namespace Microsoft.EntityFrameworkCore
+{
     /// <summary>
     /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
     /// </summary>
     /// <typeparam name="TContext">The type of the db context.</typeparam>
-    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext {
+    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
+    {
         private readonly TContext _context;
         private bool disposed = false;
         private Dictionary<Type, object> repositories;
@@ -49,7 +51,7 @@ namespace Microsoft.EntityFrameworkCore {
         public TContext DbContext => _context;
 
         /// <summary>
-        /// Changes the database name. This require the databases in the same machine.
+        /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
         /// </summary>
         /// <param name="database">The database name.</param>
         /// <remarks>
@@ -122,8 +124,10 @@ namespace Microsoft.EntityFrameworkCore {
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <returns>The number of state entries written to the database.</returns>
-        public int SaveChanges(bool ensureAutoHistory = false) {
-            if (ensureAutoHistory) {
+        public int SaveChanges(bool ensureAutoHistory = false)
+        {
+            if (ensureAutoHistory)
+            {
                 _context.EnsureAutoHistory();
             }
 
@@ -135,8 +139,10 @@ namespace Microsoft.EntityFrameworkCore {
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false) {
-            if (ensureAutoHistory) {
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
+        {
+            if (ensureAutoHistory)
+            {
                 _context.EnsureAutoHistory();
             }
 
@@ -149,10 +155,13 @@ namespace Microsoft.EntityFrameworkCore {
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks) {
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
+        {
             // TransactionScope will be included in .NET Core v1.2
-            using (var transaction = _context.Database.BeginTransaction()) {
-                try {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
                     var count = 0;
                     foreach (var unitOfWork in unitOfWorks)
                     {
@@ -167,7 +176,8 @@ namespace Microsoft.EntityFrameworkCore {
 
                     return count;
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
 
                     transaction.Rollback();
 
@@ -179,7 +189,8 @@ namespace Microsoft.EntityFrameworkCore {
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
 
             GC.SuppressFinalize(this);
@@ -189,11 +200,15 @@ namespace Microsoft.EntityFrameworkCore {
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <param name="disposing">The disposing.</param>
-        protected virtual void Dispose(bool disposing) {
-            if (!disposed) {
-                if (disposing) {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
                     // clear repositories
-                    if (repositories != null) {
+                    if (repositories != null)
+                    {
                         repositories.Clear();
                     }
 

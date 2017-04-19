@@ -22,5 +22,40 @@ private readonly IUnitOfWork _unitOfWork;
 public ValuesController(IUnitOfWork unitOfWork)
 {
     _unitOfWork = unitOfWork;
+
+    // Change database only work for MySQL right now.
+    unitOfWork.ChangeDatabase($"uow_db_{DateTime.Now.Year}");
+
+    var userRepo = unitOfWork.GetRepository<User>();
+    var postRepo = unitOfWork.GetRepository<Post>();
+
+    var ym = DateTime.Now.ToString("yyyyMM");
+
+    userRepo.ChangeTable($"user_{ym}");
+    postRepo.ChangeTable($"post_{ym}");
+
+    var user = new User
+    {
+        UserName = "rigofunc",
+        Password = "password"
+    };
+
+    userRepo.Insert(user);
+
+    var post = new Post
+    {
+        UserId = user.UserId,
+        Content = "What a piece of junk!"
+    };
+
+    postRepo.Insert(post);
+
+    unitOfWork.SaveChanges();
+
+    var find = userRepo.Get(user.UserId);
+
+    find.Password = "p@ssword";
+
+    unitOfWork.SaveChanges();
 }
 ```
