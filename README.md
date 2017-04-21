@@ -3,7 +3,7 @@ A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work p
 
 ## Support MySQL multiple databases/tables sharding
 
-After [v1.1.2](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.UnitOfWork/1.1.2) had support MySQL multiple databases/tables sharding in the same model. 
+After [v1.1.2](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.UnitOfWork/1.1.2) had support MySQL multiple databases/tables sharding in the same model in the same machine. For different machine, you can use DbContextFactory to dynamically create DbContext. 
 You can use [Pomelo.EntityFrameworkCore.MySql](https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql) to test this feature. @[PomeloFoundation](https://github.com/PomeloFoundation)
 
 # Quickly start
