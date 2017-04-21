@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -59,15 +60,21 @@ namespace Microsoft.EntityFrameworkCore
         /// </remarks>
         public void ChangeDatabase(string database)
         {
-            if (_context.Model.Relational() is RelationalModelAnnotations relational)
-            {
-                relational.DatabaseName = database;
-            }
+            // see https://github.com/aspnet/EntityFramework/issues/7936
+            //if (_context.Model.Relational() is RelationalModelAnnotations relational)
+            //{
+            //    relational.DatabaseName = database;
+            //}
 
             var connection = _context.Database.GetDbConnection();
             if (connection.State.HasFlag(ConnectionState.Open))
             {
                 connection.ChangeDatabase(database);
+            }
+            else
+            {
+                var connectionString = Regex.Replace(connection.ConnectionString, @"(?<=[Dd]atabase=)\w+(?=;)", database, RegexOptions.Singleline);
+                connection.ConnectionString = connectionString;
             }
 
             // Following code only working for mysql.
@@ -157,7 +164,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
-            // TransactionScope will be included in .NET Core v1.2
+            // TransactionScope will be included in .NET Core v2.0
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
