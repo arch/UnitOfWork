@@ -55,7 +55,21 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
             Assert.Equal(1, page.Items[0].Country.Id);
         }
 
-        public static List<Country> TestCountries => new List<Country>
+
+        [Fact]
+        public void GetPagedListWithoutInclude()
+        {
+            var repository = new Repository<City>(db);
+
+            var page = repository.GetPagedList(pageIndex: 0, pageSize: 1);
+
+            Assert.Equal(1, page.Items.Count);
+            Assert.Null(page.Items[0].Country);
+        }
+
+
+
+        protected static List<Country> TestCountries => new List<Country>
         {
             new Country {Id = 1, Name = "A"},
             new Country {Id = 2, Name = "B"}
