@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.UnitOfWork.Tests;
+using Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities;
 using Xunit;
 
 namespace Microsoft.EntityFrameworkCore
@@ -13,7 +15,7 @@ namespace Microsoft.EntityFrameworkCore
         [Fact]
         public async Task ToPagedListAsyncTest()
         {
-            using (var db = new CustomerContext())
+            using (var db = new InMemoryContext())
             {
                 var testItems = TestItems();
                 await db.AddRangeAsync(testItems);
@@ -55,22 +57,5 @@ namespace Microsoft.EntityFrameworkCore
                 new Customer(){Name="F", Age=5},
             };
         }
-
-        public class Customer
-        {
-            [Key]
-            public string Name { get; set; }
-            public int Age { get; set; }
-        }
-        public class CustomerContext : DbContext
-        {
-            public DbSet<Customer> Customers { get; set; }
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseInMemoryDatabase("test");
-            }
-        }
-
-
     }
 }
