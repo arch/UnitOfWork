@@ -53,16 +53,24 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IQueryable{TEntity}"/> that contains elements that satisfy the condition specified by predicate.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true)
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true)
         {
+            IQueryable<TEntity> set;
             if (disableTracking)
             {
-                return _dbSet.AsNoTracking().Where(predicate);
+                set = _dbSet.AsNoTracking();
             }
             else
             {
-                return _dbSet.Where(predicate);
+                set = _dbSet;
             }
+            
+            if (predicate != null)
+            {
+                set = set.Where(predicate);
+            }
+
+            return set;
         }
 
         /// <summary>
