@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Arch team. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.EntityFrameworkCore
 {
@@ -34,7 +35,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <summary>
         /// Gets the current page items.
         /// </summary>
-        IList<T> Items { get; }
+        IEnumerable<T> Items { get; }
         /// <summary>
         /// Gets the has previous page.
         /// </summary>
