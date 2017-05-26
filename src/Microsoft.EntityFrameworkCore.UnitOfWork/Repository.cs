@@ -53,7 +53,6 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IQueryable{TEntity}"/> that contains elements that satisfy the condition specified by predicate.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        [Obsolete("This method will be removed in v2.0.0, please use 'GetPagedList' method.")]
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true)
         {
             if (disableTracking)

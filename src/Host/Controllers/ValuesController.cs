@@ -1,4 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Host.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,31 +21,74 @@ namespace Host.Controllers
         public ValuesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+
+            // seeding
+            var repo = _unitOfWork.GetRepository<Blog>();
+            if (!repo.Query(x => true).Any())
+            {
+                Enumerable.Range(1, 100)
+                    .ToList()
+                    .ForEach(x =>
+                    {
+                        repo.Insert(new Blog
+                        {
+                            BlogId = x,
+                            Url = "/a/" + x,
+                            Title = $"a{x}"
+                        });
+                    });
+                _unitOfWork.SaveChanges();
+            }
         }
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<Blog>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var repo = _unitOfWork.GetRepository<Blog>();
+            var values = await repo.Query(x => true, true).ToListAsync();
+            return values;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/values/Page/5/10
+        [HttpGet("Page/{pageNumber}/{pageSize}")]
+        public async Task<IEnumerable<Blog>> Get(int pageNumber, int pageSize)
         {
-            return "value";
+            var repo = _unitOfWork.GetRepository<Blog>();
+            var value = await repo.GetPagedListAsync(null, null, null, pageNumber, pageSize);
+            return value.Items;
+        }
+
+        // GET api/values/Search/a1
+        [HttpGet("Search/{term}")]
+        public async Task<IEnumerable<Blog>> Get(string term)
+        {
+            var repo = _unitOfWork.GetRepository<Blog>();
+            var value = repo.Query(x => x.Title.Contains(term));
+            return await value.ToListAsync();
+        }
+
+        // GET api/values/4
+        [HttpGet("{id}")]
+        public async Task<Blog> Get(int id)
+        {
+            var repo = _unitOfWork.GetRepository<Blog>();
+            var value = await repo.FindAsync(id);
+            return value;
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task Post([FromBody]Blog value)
         {
+            var repo = _unitOfWork.GetRepository<Blog>();
+            repo.Insert(value);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task Put(int id, [FromBody]Blog value)
         {
         }
 
