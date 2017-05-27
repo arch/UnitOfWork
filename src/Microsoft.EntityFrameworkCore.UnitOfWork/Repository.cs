@@ -47,6 +47,23 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
+        /// Unfiltered sequence of every entity. This method default no-tracking query.
+        /// </summary>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <returns>An <see cref="IQueryable{TEntity}"/> that contains all elements.</returns>
+        public IQueryable<TEntity> GetAll(bool disableTracking = true)
+        {
+            if (disableTracking)
+            {
+                return _dbSet.AsNoTracking();
+            }
+            else
+            {
+                return _dbSet;
+            }
+        }
+
+        /// <summary>
         /// Filters a sequence of values based on a predicate. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
