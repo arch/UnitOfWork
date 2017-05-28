@@ -21,13 +21,31 @@ namespace Microsoft.EntityFrameworkCore
         private bool disposed = false;
         private Dictionary<Type, object> repositories;
 
+        private readonly Dictionary<Type, Func<DbContext, object>> _customRepositoryFactories;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public UnitOfWork(TContext context)
+        /// <param name="customRepositoryFactories">An optional dictionary of factory methods to create custom repositories 
+        /// for specific types.  Factory methods accept a single <see cref="DbContext"/> parameter and should return a 
+        /// repository, bound to that context.
+        /// </param>
+        /// <example>
+        /// Construction of the UnitOfWork, passing the dictionary of factories for specific types
+        /// <code>
+        /// var myRepositories = new Dictionary&lt;Type, Func&lt;DbContext, object&gt;&gt;
+        /// {
+        ///     {   typeof(Customer),    ctx => new CustomerRepository(ctx)  },
+        ///     {   typeof(Product),     ctx => new ProductRepository(ctx)   },
+        /// };
+        /// var uow = new UnitOfWork(myContext, myRepositories);
+        /// </code>
+        /// </example>
+        public UnitOfWork(TContext context, Dictionary<Type, Func<DbContext, object>> customRepositoryFactories = null)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _customRepositoryFactories = customRepositoryFactories;
 
             //var connection = _context.Database.GetDbConnection();
             //if (_context.Model.Relational() is RelationalModelAnnotations relational)
@@ -103,7 +121,15 @@ namespace Microsoft.EntityFrameworkCore
             var type = typeof(TEntity);
             if (!repositories.ContainsKey(type))
             {
-                repositories[type] = new Repository<TEntity>(_context);
+                if (_customRepositoryFactories != null && _customRepositoryFactories.ContainsKey(type))
+                {
+                    var factoryMethod = _customRepositoryFactories[type];
+                    repositories[type] = factoryMethod(_context);
+                }
+                else
+                {
+                    repositories[type] = new Repository<TEntity>(_context);
+                }
             }
 
             return (IRepository<TEntity>)repositories[type];
