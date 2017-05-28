@@ -36,8 +36,8 @@ namespace Microsoft.EntityFrameworkCore
         /// <code>
         /// var myRepositories = new Dictionary&lt;Type, Func&lt;DbContext, object&gt;&gt;
         /// {
-        ///     {   typeof(ICustomerRepository),    ctx => new CustomerRepository(ctx)  },
-        ///     {   typeof(IProductRepository),     ctx => new ProductRepository(ctx)   },
+        ///     {   typeof(Customer),    ctx => new CustomerRepository(ctx)  },
+        ///     {   typeof(Product),     ctx => new ProductRepository(ctx)   },
         /// };
         /// var uow = new UnitOfWork(myContext, myRepositories);
         /// </code>
