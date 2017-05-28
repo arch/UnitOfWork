@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System;
 
 namespace Host
 {
@@ -33,7 +35,11 @@ namespace Host
             // use in memory for testing.
             services
                 .AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase())
-                .AddUnitOfWork<BloggingContext>();
+                .AddUnitOfWork<BloggingContext>()
+                .AddSingleton<Dictionary<Type, Func<DbContext, object>>>(x => new Dictionary<Type, Func<DbContext, object>>
+                {
+                    { typeof(Blog), dbContext => new BlogRepository(dbContext) },
+                });
 
             services.AddMvc();
         }

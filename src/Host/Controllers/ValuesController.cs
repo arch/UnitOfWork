@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,6 +21,7 @@ namespace Host.Controllers
 
         public ValuesController(IUnitOfWork unitOfWork)
         {
+
             _unitOfWork = unitOfWork;
 
             // seeding
@@ -34,7 +36,8 @@ namespace Host.Controllers
                         {
                             BlogId = x,
                             Url = "/a/" + x,
-                            Title = $"a{x}"
+                            Title = $"a{x}",
+                            Reviewed = (x%2 == 0) ? DateTime.Now : (DateTime?)null
                         });
                     });
                 _unitOfWork.SaveChanges();
@@ -46,8 +49,17 @@ namespace Host.Controllers
         public async Task<IEnumerable<Blog>> Get()
         {
             var repo = _unitOfWork.GetRepository<Blog>();
-            var values = await repo.Query(x => true, true).ToListAsync();
+            var values = await repo.Query().ToListAsync();
             return values;
+        }
+
+        // GET api/values/Page/5/10
+        [HttpGet("Unreviewed")]
+        public async Task<IEnumerable<Blog>> GetUnreviewed()
+        {
+            var repo = (IBlogRepository)_unitOfWork.GetRepository<Blog>();
+            var value = await repo.GetRequiresReview().ToListAsync();
+            return value;
         }
 
         // GET api/values/Page/5/10
