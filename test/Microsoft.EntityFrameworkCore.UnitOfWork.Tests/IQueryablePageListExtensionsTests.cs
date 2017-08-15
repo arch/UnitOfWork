@@ -1,7 +1,4 @@
-using Host.Models;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Tests;
@@ -30,20 +27,13 @@ namespace Microsoft.EntityFrameworkCore
                 Assert.Equal(2, page.Items.Count);
                 Assert.Equal("E", page.Items[0].Name);
 
-              page = await items.ToPagedListAsync(0, 2);
+                page = await items.ToPagedListAsync(0, 2);
                 Assert.NotNull(page);
                 Assert.Equal(4, page.TotalCount);
                 Assert.Equal(2, page.Items.Count);
                 Assert.Equal("C", page.Items[0].Name);
             }
-
-
-
-
-
         }
-
-
 
         public List<Customer> TestItems()
         {

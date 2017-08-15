@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities;
 using Xunit;
 
@@ -24,7 +19,7 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
 
             db.SaveChanges();
         }
-        
+
         [Fact]
         public void GetPagedList()
         {
@@ -55,7 +50,6 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
             Assert.Equal(1, page.Items[0].Country.Id);
         }
 
-
         [Fact]
         public void GetPagedListWithoutInclude()
         {
@@ -66,8 +60,6 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
             Assert.Equal(1, page.Items.Count);
             Assert.Null(page.Items[0].Country);
         }
-
-
 
         protected static List<Country> TestCountries => new List<Country>
         {

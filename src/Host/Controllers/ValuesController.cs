@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Host.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +22,7 @@ namespace Host.Controllers
 
             // seeding
             var repo = _unitOfWork.GetRepository<Blog>();
-            if (!repo.Query(x => true).Any())
+            if (repo.Count() == 0)
             {
                 Enumerable.Range(1, 100)
                     .ToList()
@@ -43,11 +41,10 @@ namespace Host.Controllers
 
         // GET api/values
         [HttpGet]
-        public async Task<IEnumerable<Blog>> Get()
+        public async Task<IPagedList<Blog>> Get()
         {
             var repo = _unitOfWork.GetRepository<Blog>();
-            var values = await repo.Query(x => true, true).ToListAsync();
-            return values;
+            return await repo.GetPagedListAsync();
         }
 
         // GET api/values/Page/5/10
@@ -61,11 +58,10 @@ namespace Host.Controllers
 
         // GET api/values/Search/a1
         [HttpGet("Search/{term}")]
-        public async Task<IEnumerable<Blog>> Get(string term)
+        public async Task<IPagedList<Blog>> Get(string term)
         {
             var repo = _unitOfWork.GetRepository<Blog>();
-            var value = repo.Query(x => x.Title.Contains(term));
-            return await value.ToListAsync();
+            return await repo.GetPagedListAsync(x => x.Title.Contains(term));
         }
 
         // GET api/values/4

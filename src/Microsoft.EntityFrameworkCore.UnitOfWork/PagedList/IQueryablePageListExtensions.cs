@@ -27,8 +27,8 @@ namespace Microsoft.EntityFrameworkCore
             }
 
             var count = await source.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = source.Skip((pageIndex - indexFrom) * pageSize)
-                                    .Take(pageSize);
+            var items = await source.Skip((pageIndex - indexFrom) * pageSize)
+                                    .Take(pageSize).ToListAsync(cancellationToken).ConfigureAwait(false);
 
             var pagedList = new PagedList<T>()
             {

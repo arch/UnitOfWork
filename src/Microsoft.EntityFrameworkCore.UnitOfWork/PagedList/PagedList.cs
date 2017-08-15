@@ -42,7 +42,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Gets or sets the items.
         /// </summary>
         /// <value>The items.</value>
-        public IEnumerable<T> Items { get; set; }
+        public IList<T> Items { get; set; }
 
         /// <summary>
         /// Gets the has previous page.
@@ -76,16 +76,16 @@ namespace Microsoft.EntityFrameworkCore
             TotalCount = source.Count();
             TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-            Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize);
+            Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
         /// </summary>
-        internal PagedList() => Items = new T[0].AsQueryable();
+        internal PagedList() => Items = new T[0];
     }
 
-    
+
     /// <summary>
     /// Provides the implementation of the <see cref="IPagedList{T}"/> and converter.
     /// </summary>
@@ -123,7 +123,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Gets the items.
         /// </summary>
         /// <value>The items.</value>
-        public IEnumerable<TResult> Items { get; }
+        public IList<TResult> Items { get; }
 
         /// <summary>
         /// Gets the has previous page.
