@@ -32,7 +32,7 @@ namespace Host
         {
             // use in memory for testing.
             services
-                .AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase())
+                .AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
                 .AddUnitOfWork<BloggingContext>();
 
             services.AddMvc();
