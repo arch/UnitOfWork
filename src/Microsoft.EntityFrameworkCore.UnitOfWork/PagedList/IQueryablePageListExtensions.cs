@@ -36,7 +36,8 @@ namespace Microsoft.EntityFrameworkCore
                 PageSize = pageSize,
                 IndexFrom = indexFrom,
                 TotalCount = count,
-                Items = items
+                Items = items,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize)
             };
 
             return pagedList;
