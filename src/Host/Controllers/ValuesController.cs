@@ -56,7 +56,7 @@ namespace Host.Controllers
         [HttpGet("Search/{term}")]
         public async Task<IPagedList<Blog>> Get(string term)
         {
-            return await _unitOfWork.GetRepository<Blog>().GetPagedListAsync(x => x.Title.Contains(term));
+            return await _unitOfWork.GetRepository<Blog>().GetPagedListAsync(predicate: x => x.Title.Contains(term));
         }
 
         // GET api/values/4
