@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities
 {
@@ -7,9 +8,10 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         
-        [ForeignKey(nameof(Country))]
         public int CountryId { get; set; }
 
-        public virtual Country Country { get; set; }
+        public Country Country { get; set; }
+
+        public List<Town> Towns { get; set; }
     }
 }

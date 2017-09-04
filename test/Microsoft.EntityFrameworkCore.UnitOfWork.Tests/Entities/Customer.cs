@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities
+﻿namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities
 {
     public class Customer
     {
-        [Key]
+        public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
     }

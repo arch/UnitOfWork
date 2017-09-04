@@ -7,7 +7,6 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
 {
     public class InMemoryContext : DbContext
     {
-        public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Customer> Customers { get; set; }
 

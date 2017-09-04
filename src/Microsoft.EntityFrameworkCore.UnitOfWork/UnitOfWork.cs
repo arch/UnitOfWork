@@ -28,21 +28,6 @@ namespace Microsoft.EntityFrameworkCore
         public UnitOfWork(TContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-
-            //var connection = _context.Database.GetDbConnection();
-            //if (_context.Model.Relational() is RelationalModelAnnotations relational)
-            //{
-            //    relational.DatabaseName = connection.Database;
-            //}
-
-            //var items = _context.Model.GetEntityTypes();
-            //foreach (var item in items)
-            //{
-            //    if (item.Relational() is RelationalEntityTypeAnnotations extensions)
-            //    {
-            //        extensions.Schema = connection.Database;
-            //    }
-            //}
         }
 
         /// <summary>
@@ -60,12 +45,6 @@ namespace Microsoft.EntityFrameworkCore
         /// </remarks>
         public void ChangeDatabase(string database)
         {
-            // see https://github.com/aspnet/EntityFramework/issues/7936
-            //if (_context.Model.Relational() is RelationalModelAnnotations relational)
-            //{
-            //    relational.DatabaseName = database;
-            //}
-
             var connection = _context.Database.GetDbConnection();
             if (connection.State.HasFlag(ConnectionState.Open))
             {
@@ -73,7 +52,7 @@ namespace Microsoft.EntityFrameworkCore
             }
             else
             {
-                var connectionString = Regex.Replace(connection.ConnectionString, @"(?<=[Dd]atabase=)\w+(?=;)", database, RegexOptions.Singleline);
+                var connectionString = Regex.Replace(connection.ConnectionString.Replace(" ", ""), @"(?<=[Dd]atabase=)\w+(?=;)", database, RegexOptions.Singleline);
                 connection.ConnectionString = connectionString;
             }
 

@@ -18,8 +18,8 @@ namespace Microsoft.EntityFrameworkCore
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly DbContext _dbContext;
-        private readonly DbSet<TEntity> _dbSet;
+        protected readonly DbContext _dbContext;
+        protected readonly DbSet<TEntity> _dbSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class.
