@@ -1,10 +1,10 @@
 ﻿using Host.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 
 namespace Host
 {
@@ -32,7 +32,8 @@ namespace Host
         {
             // use in memory for testing.
             services
-                .AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
+                .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=unitofwork;uid=root;pwd=p@ssword;"))
+                //.AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
                 .AddUnitOfWork<BloggingContext>();
 
             services.AddMvc();

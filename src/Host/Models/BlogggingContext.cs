@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
 
 namespace Host.Models
 {
@@ -22,8 +20,7 @@ namespace Host.Models
 
     public class Blog
     {
-        [Key]
-        public int BlogId { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Title { get; set; }
 
@@ -32,11 +29,17 @@ namespace Host.Models
 
     public class Post
     {
-        [Key]
-        public int PostId { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
 
-        public Blog Blog { get; set; }
+        public List<Comment> Comments { get; set; }
+    }
+
+    public class Comment
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
     }
 }
