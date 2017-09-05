@@ -67,5 +67,23 @@ public ValuesController(IUnitOfWork unitOfWork)
     find.Password = "p@ssword";
 
     unitOfWork.SaveChanges();
+
+    // projection
+
+}
+```
+
+# Projection & Including
+
+```csharp
+// projection
+var pagedList = _unitOfWork.GetRepository<Blog>().GetPagedList(b => new { Name = b.Title, Link = b.Url }, pageIndex: pageIndex, pageSize: pageSize);
+var projection = _unitOfWork.GetRepository<Blog>().GetFirstOrDefault(b => new { Name = b.Title, Link = b.Url }, predicate: x => x.Title.Contains(term));
+
+// including
+[HttpGet]
+public async Task<IPagedList<Blog>> Get()
+{
+    return await _unitOfWork.GetRepository<Blog>().GetPagedListAsync(include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
 }
 ```
