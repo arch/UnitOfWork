@@ -276,6 +276,39 @@ namespace Microsoft.EntityFrameworkCore
             }
         }
 
+
+        /// <inheritdoc />
+        public async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).FirstOrDefaultAsync();
+            }
+            else
+            {
+                return await query.FirstOrDefaultAsync();
+            }
+        }
+
         /// <summary>
         /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method default no-tracking query.
         /// </summary>
@@ -315,6 +348,39 @@ namespace Microsoft.EntityFrameworkCore
             else
             {
                 return query.Select(selector).FirstOrDefault();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
+                                                  Expression<Func<TEntity, bool>> predicate = null,
+                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                  bool disableTracking = true)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).Select(selector).FirstOrDefaultAsync();
+            }
+            else
+            {
+                return await query.Select(selector).FirstOrDefaultAsync();
             }
         }
 
@@ -425,12 +491,16 @@ namespace Microsoft.EntityFrameworkCore
         public void Update(TEntity entity)
         {
             _dbSet.Update(entity);
+        }
 
-            // Shadow properties?
-            //var property = _dbContext.Entry(entity).Property("LastUpdated");
-            //if(property != null) {
-            //property.CurrentValue = DateTime.Now;
-            //}
+        /// <summary>
+        /// Updates the specified entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        public void UpdateAsync(TEntity entity)
+        {
+            _dbSet.Update(entity);
+
         }
 
         /// <summary>
