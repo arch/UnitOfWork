@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.</Description>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.2</VersionPrefix>
     <Authors>rigofunc;rigofunc@outlook.com;</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>

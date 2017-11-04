@@ -200,6 +200,13 @@ namespace Microsoft.EntityFrameworkCore
         Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
+        IQueryable<TEntity> GetAll();
+
+        /// <summary>
         /// Gets the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>

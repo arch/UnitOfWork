@@ -46,6 +46,18 @@ namespace Microsoft.EntityFrameworkCore
             }
         }
 
+
+        /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
+        public IQueryable<TEntity> GetAll()
+        {
+            return _dbSet;
+        }
+
+
         /// <summary>
         /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
         /// </summary>
