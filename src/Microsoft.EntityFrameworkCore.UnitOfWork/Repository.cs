@@ -541,7 +541,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
-            var key = _dbContext.Model.FindEntityType(typeInfo.Name).FindPrimaryKey().Properties.FirstOrDefault();
+            var key = _dbContext.Model.FindEntityType(typeInfo).FindPrimaryKey().Properties.FirstOrDefault();
             var property = typeInfo.GetProperty(key?.Name);
             if (property != null)
             {
