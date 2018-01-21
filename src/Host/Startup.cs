@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.UnitOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,10 @@ namespace Host
             services
                 .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=unitofwork;uid=root;pwd=p@ssword;"))
                 //.AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
-                .AddUnitOfWork<BloggingContext>();
+                .AddUnitOfWork<BloggingContext>()
+                // these 2 lines inject my custom repositories
+                .AddScoped<IUnitOfWorkRepositoryProvider, UnitOfWorkRepositoryProvider<BloggingContext>>()
+                .AddScoped<IBlogRepository, BlogRepository<BloggingContext>>();
 
             services.AddMvc();
         }

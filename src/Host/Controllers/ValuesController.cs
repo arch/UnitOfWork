@@ -186,7 +186,10 @@ namespace Host.Controllers
         [HttpGet("{id}")]
         public async Task<Blog> Get(int id)
         {
-            return await _unitOfWork.GetRepository<Blog>().FindAsync(id);
+            //return await _unitOfWork.GetRepository<Blog>().FindAsync(id);
+
+            Blog blog = await ((IBlogRepository)_unitOfWork.GetRepository<Blog>()).BlogAsync(id);
+            return blog;
         }
 
         // POST api/values
