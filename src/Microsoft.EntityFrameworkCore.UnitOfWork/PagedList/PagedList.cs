@@ -70,13 +70,26 @@ namespace Microsoft.EntityFrameworkCore
                 throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
             }
 
-            PageIndex = pageIndex;
-            PageSize = pageSize;
-            IndexFrom = indexFrom;
-            TotalCount = source.Count();
-            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+            if (source is IQueryable<T> querable)
+            {
+                PageIndex = pageIndex;
+                PageSize = pageSize;
+                IndexFrom = indexFrom;
+                TotalCount = querable.Count();
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-            Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
+                Items = querable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
+            }
+            else
+            {
+                PageIndex = pageIndex;
+                PageSize = pageSize;
+                IndexFrom = indexFrom;
+                TotalCount = source.Count();
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+
+                Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
+            }
         }
 
         /// <summary>
@@ -152,15 +165,30 @@ namespace Microsoft.EntityFrameworkCore
                 throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
             }
 
-            PageIndex = pageIndex;
-            PageSize = pageSize;
-            IndexFrom = indexFrom;
-            TotalCount = source.Count();
-            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+            if (source is IQueryable<TSource> querable)
+            {
+                PageIndex = pageIndex;
+                PageSize = pageSize;
+                IndexFrom = indexFrom;
+                TotalCount = querable.Count();
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-            var items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
+                var items = querable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
 
-            Items = new List<TResult>(converter(items));
+                Items = new List<TResult>(converter(items));
+            }
+            else
+            {
+                PageIndex = pageIndex;
+                PageSize = pageSize;
+                IndexFrom = indexFrom;
+                TotalCount = source.Count();
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+
+                var items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
+
+                Items = new List<TResult>(converter(items));
+            }
         }
 
         /// <summary>
