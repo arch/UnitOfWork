@@ -106,6 +106,16 @@ namespace Microsoft.EntityFrameworkCore
         public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => _context.Set<TEntity>().FromSql(sql, parameters);
 
         /// <summary>
+        /// Starts Databaselevel Transaction
+        /// </summary>
+        /// <param name="isolation">The IsolationLevel</param>
+        /// <returns>Transaction Context</returns>
+        public IDbContextTransaction BeginTransaction(IsolationLevel isolation = IsolationLevel.ReadCommitted)
+        {
+            return _context.Database.BeginTransaction(isolation);
+        }
+
+        /// <summary>
         /// Saves all changes made in this context to the database.
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
@@ -171,6 +181,45 @@ namespace Microsoft.EntityFrameworkCore
                 }
             }
         }
+
+        /// <summary>
+        /// Saves all changes made in this context to the database with distributed transaction.
+        /// </summary>
+        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
+        /// <param name="isolation">The IsolationLevel</param>
+        /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
+        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, IsolationLevel isolation = IsolationLevel.ReadCommitted, params IUnitOfWork[] unitOfWorks)
+        {
+            // TransactionScope will be included in .NET Core v2.0
+            using (var transaction = _context.Database.BeginTransaction(isolation))
+            {
+                try
+                {
+                    var count = 0;
+                    foreach (var unitOfWork in unitOfWorks)
+                    {
+                        var uow = unitOfWork as UnitOfWork<DbContext>;
+                        uow.DbContext.Database.UseTransaction(transaction.GetDbTransaction());
+                        count += await uow.SaveChangesAsync(ensureAutoHistory);
+                    }
+
+                    count += await SaveChangesAsync(ensureAutoHistory);
+
+                    transaction.Commit();
+
+                    return count;
+                }
+                catch (Exception ex)
+                {
+
+                    transaction.Rollback();
+
+                    throw ex;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

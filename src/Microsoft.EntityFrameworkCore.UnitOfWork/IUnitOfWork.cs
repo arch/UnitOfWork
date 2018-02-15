@@ -3,6 +3,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Microsoft.EntityFrameworkCore
 {
@@ -57,5 +59,12 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{T}"/> that contains elements that satisfy the condition specified by raw SQL.</returns>
         IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class;
+
+        /// <summary>
+        /// Starts Databaselevel Transaction
+        /// </summary>
+        /// <param name="isolation">The IsolationLevel</param>
+        /// <returns>Transaction Context</returns>
+        IDbContextTransaction BeginTransaction(IsolationLevel isolation = IsolationLevel.ReadCommitted);
     }
 }
