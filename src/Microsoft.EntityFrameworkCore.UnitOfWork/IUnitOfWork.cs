@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Microsoft.EntityFrameworkCore
 {
@@ -65,5 +67,13 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="rootEntity"> Root entity</param>
         /// <param name="callback">Delegate to convert Object's State properities to Entities entry state.</param>
         void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback);
+
+        /// <summary>
+        /// Starts Databaselevel Transaction
+        /// </summary>
+        /// <param name="isolation">The IsolationLevel</param>
+        /// <returns>Transaction Context</returns>
+        IDbContextTransaction BeginTransaction(IsolationLevel isolation = IsolationLevel.ReadCommitted);
+
     }
 }
