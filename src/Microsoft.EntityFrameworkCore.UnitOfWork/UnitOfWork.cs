@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.UnitOfWork;
 
 namespace Microsoft.EntityFrameworkCore
 {
@@ -16,7 +17,8 @@ namespace Microsoft.EntityFrameworkCore
     /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
     /// </summary>
     /// <typeparam name="TContext">The type of the db context.</typeparam>
-    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
+    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork 
+        where TContext : DbContext
     {
         private readonly TContext _context;
         private bool disposed = false;
@@ -26,9 +28,11 @@ namespace Microsoft.EntityFrameworkCore
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public UnitOfWork(TContext context)
+        /// <param name="unitOfWorkRepositoryProvider">An optional injector of custom repositories</param>
+        public UnitOfWork(TContext context, IUnitOfWorkRepositoryProvider unitOfWorkRepositoryProvider = null)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            repositories = unitOfWorkRepositoryProvider.RepositoriesDictionary;
         }
 
         /// <summary>
