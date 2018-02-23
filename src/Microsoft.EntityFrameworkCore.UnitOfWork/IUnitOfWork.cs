@@ -66,8 +66,8 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="rootEntity"> Root entity</param>
         /// <param name="callback">Delegate to convert Object's State properities to Entities entry state.</param>
-
         void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback);
+
         /// <summary>
         /// Starts Databaselevel Transaction
         /// </summary>
