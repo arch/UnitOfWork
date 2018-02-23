@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -204,6 +205,11 @@ namespace Microsoft.EntityFrameworkCore
             }
 
             disposed = true;
+        }
+
+        public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback)
+        {
+            _context.ChangeTracker.TrackGraph(rootEntity, callback);
         }
     }
 }
