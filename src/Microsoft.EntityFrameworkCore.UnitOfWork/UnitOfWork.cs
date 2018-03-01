@@ -149,48 +149,11 @@ namespace Microsoft.EntityFrameworkCore
         /// <summary>
         /// Saves all changes made in this context to the database with distributed transaction.
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
-        {
-            // TransactionScope will be included in .NET Core v2.0
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    var count = 0;
-                    foreach (var unitOfWork in unitOfWorks)
-                    {
-                        var uow = unitOfWork as UnitOfWork<DbContext>;
-                        uow.DbContext.Database.UseTransaction(transaction.GetDbTransaction());
-                        count += await uow.SaveChangesAsync(ensureAutoHistory);
-                    }
-
-                    count += await SaveChangesAsync(ensureAutoHistory);
-
-                    transaction.Commit();
-
-                    return count;
-                }
-                catch (Exception ex)
-                {
-
-                    transaction.Rollback();
-
-                    throw ex;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves all changes made in this context to the database with distributed transaction.
-        /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <param name="isolation">The IsolationLevel</param>
+        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, IsolationLevel isolation = IsolationLevel.ReadCommitted, params IUnitOfWork[] unitOfWorks)
+        public async Task<int> SaveChangesAsync(IsolationLevel isolation = IsolationLevel.ReadCommitted, bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
             // TransactionScope will be included in .NET Core v2.0
             using (var transaction = _context.Database.BeginTransaction(isolation))
