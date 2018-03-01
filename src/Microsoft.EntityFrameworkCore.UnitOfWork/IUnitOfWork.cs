@@ -74,6 +74,5 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="isolation">The IsolationLevel</param>
         /// <returns>Transaction Context</returns>
         IDbContextTransaction BeginTransaction(IsolationLevel isolation = IsolationLevel.ReadCommitted);
-
     }
 }
