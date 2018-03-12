@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -96,6 +97,30 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="parameters">The parameters.</param>
         /// <returns>The number of state entities written to database.</returns>
         public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlCommand(sql, parameters);
+
+
+        /// <summary>
+        /// Executes the specified raw SQL command.
+        /// </summary>
+        /// <param name="sql">The raw SQL.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The DataTable.</returns>
+        public DataTable ExecuteDtSqlCommand(string sql, params object[] parameters)
+        {
+           SqlConnection conn = (SqlConnection) _context.Database.GetDbConnection();
+           SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.CommandTimeout = 0;
+            conn.Open();
+            // create data adapter
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            // this will query your database and return the result to your datatable
+            DataTable dataTable = new DataTable();
+            da.Fill(dataTable);
+            da.Dispose();
+            conn.Close();
+            return dataTable;
+        }
+
 
         /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.

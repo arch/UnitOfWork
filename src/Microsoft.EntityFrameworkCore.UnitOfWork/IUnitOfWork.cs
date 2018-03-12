@@ -52,6 +52,15 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The number of state entities written to database.</returns>
         int ExecuteSqlCommand(string sql, params object[] parameters);
 
+
+        /// <summary>
+        /// Executes the specified raw SQL command.
+        /// </summary>
+        /// <param name="sql">The raw SQL.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The number of state entities written to database.</returns>
+        DataTable ExecuteDtSqlCommand(string sql, params object[] parameters);
+
         /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity"/> data.
         /// </summary>
