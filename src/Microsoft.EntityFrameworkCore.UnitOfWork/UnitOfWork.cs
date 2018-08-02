@@ -110,6 +110,15 @@ namespace Microsoft.EntityFrameworkCore
            SqlConnection conn = (SqlConnection) _context.Database.GetDbConnection();
            SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.CommandTimeout = 0;
+
+            if(parameters != null && parameters.Count() > 0)
+            {
+                foreach(object obj in parameters)
+                {
+                    cmd.Parameters.Add(obj);
+                }
+            }
+
             conn.Open();
             // create data adapter
             SqlDataAdapter da = new SqlDataAdapter(cmd);
