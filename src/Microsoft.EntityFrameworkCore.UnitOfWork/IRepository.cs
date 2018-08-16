@@ -295,5 +295,38 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="entities">The entities.</param>
         void Delete(IEnumerable<TEntity> entities);
+
+
+        /// <summary>
+        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate. This method default no-tracking query.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="cancellationToken">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>An <see cref="List{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>This method default no-tracking query.</remarks>
+        Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
+                                                    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                    Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                    bool disableTracking = true,
+                                                    CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets the <see cref="List{TResult}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <returns>An <see cref="List{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>This method default no-tracking query.</remarks>
+        List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
+                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                  bool disableTracking = true);
     }
 }
