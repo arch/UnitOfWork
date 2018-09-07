@@ -1,4 +1,4 @@
-﻿// Copyright (c) Arch team of Tencent. All rights reserved.
+﻿// Copyright (c) Arch team. All rights reserved.
 
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <remarks>
         /// This method only support one db context, if been called more than once, will throw exception.
         /// </remarks>
-        public static IServiceCollection AddUnitOfWork<TContext1, TContext2>(this IServiceCollection services) 
+        public static IServiceCollection AddUnitOfWork<TContext1, TContext2>(this IServiceCollection services)
             where TContext1 : DbContext
             where TContext2 : DbContext
         {
@@ -95,6 +95,22 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IUnitOfWork<TContext2>, UnitOfWork<TContext2>>();
             services.AddScoped<IUnitOfWork<TContext3>, UnitOfWork<TContext3>>();
             services.AddScoped<IUnitOfWork<TContext4>, UnitOfWork<TContext4>>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers the custom repository as a service in the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="TRepository">The type of the custom repositry.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <returns>The same service collection so that multiple calls can be chained.</returns>
+        public static IServiceCollection AddCustomRepository<TEntity, TRepository>(this IServiceCollection services)
+            where TEntity : class
+            where TRepository : class, IRepository<TEntity>
+        {
+            services.AddScoped<IRepository<TEntity>, TRepository>();
 
             return services;
         }
