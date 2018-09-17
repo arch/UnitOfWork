@@ -658,5 +658,286 @@ namespace Microsoft.EntityFrameworkCore
         }
 
 
+        /// <summary>
+        /// Finds next entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        public TEntity GetNextById(params object[] keyValues)
+        {
+            return _dbSet.Find(IncrementKey(keyValues));
+        }
+
+
+
+        /// <summary>
+        /// Finds next entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        public Task<TEntity> GetNextByIdAsync(params object[] keyValues)
+        {
+            return _dbSet.FindAsync(IncrementKey(keyValues));
+            /*
+           ObjectContext objectContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+           ObjectSet<YourEntity> set = objectContext.CreateObjectSet<YourEntity>();
+           IEnumerable<string> keyNames = set.EntitySet.ElementType
+                                                       .KeyMembers
+                                                       .Select(k => k.Name);
+           * /
+            TEntity res = _dbSet.Find(IncrementKey(keyValues));
+            //if (res != null)
+                return Task<TEntity>.Factory.StartNew(() => res);
+
+            /*
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
+            List<TEntity> lstObjs = GetList(null, ordByExp);
+
+            TEntity resExact = _dbSet.Find(cp);
+
+            int curobj = lstObjs.IndexOf(resExact);
+            int nxt = curobj + 1;
+            return Task<TEntity>.Factory.StartNew(() => lstObjs.ElementAtOrDefault(nxt));
+            */
+        }
+
+
+        /// <summary>
+        /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        public TEntity GetPreviousById(params object[] keyValues)
+        {
+            return _dbSet.Find(DecrementKey(keyValues));
+        }
+
+
+        /// <summary>
+        /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        public Task<TEntity> GetPreviousByIdAsync(params object[] keyValues)
+        {
+            return _dbSet.FindAsync(DecrementKey(keyValues));
+        }
+
+        #region Next, Previous Support Methos
+
+        private object[] IncrementKey(object[] id)
+        {
+            int idx = id.Length -1;
+            int val = (int)id[idx];
+            id[idx] = ++val;
+            return id;
+        }
+
+        private object[] DecrementKey(object[] id)
+        {
+            int idx = id.Length - 1;
+            int val = (int)id[idx];
+            id[idx] = --val;
+            return id;
+        }
+
+
+
+        private static MemberExpression GetMemberExpression(Expression param, string propertyName)
+        {
+            if (propertyName.Contains("."))
+            {
+                int index = propertyName.IndexOf(".");
+                var subParam = Expression.Property(param, propertyName.Substring(0, index));
+                return GetMemberExpression(subParam, propertyName.Substring(index + 1));
+            }
+
+            return Expression.Property(param, propertyName);
+        }
+
+
+        public static Func<IQueryable<T>, IOrderedQueryable<T>> GetOrderBy<T>(string orderColumn, string orderType)
+        {
+            Type typeQueryable = typeof(IQueryable<T>);
+            ParameterExpression argQueryable = Expression.Parameter(typeQueryable, "p");
+            var outerExpression = Expression.Lambda(argQueryable, argQueryable);
+            string[] props = orderColumn.Split('.');
+            IQueryable<T> query = new List<T>().AsQueryable<T>();
+            Type type = typeof(T);
+            ParameterExpression arg = Expression.Parameter(type, "x");
+
+            Expression expr = arg;
+            foreach (string prop in props)
+            {
+                PropertyInfo pi = type.GetProperty(prop, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                expr = Expression.Property(expr, pi);
+                type = pi.PropertyType;
+            }
+            LambdaExpression lambda = Expression.Lambda(expr, arg);
+            string methodName = orderType == "asc" ? "OrderBy" : "OrderByDescending";
+
+            MethodCallExpression resultExp =
+                Expression.Call(typeof(Queryable), methodName, new Type[] { typeof(T), type }, outerExpression.Body, Expression.Quote(lambda));
+            var finalLambda = Expression.Lambda(resultExp, argQueryable);
+            return (Func<IQueryable<T>, IOrderedQueryable<T>>)finalLambda.Compile();
+        }
+
+
+        public static Expression<Func<IQueryable<T>, IOrderedQueryable<T>>> GetOrderByExpression<T>(IEnumerable<string> lstSelection, bool isDescending = false)
+       {
+
+           bool isThenBy = false;
+           ParameterExpression inParameter = Expression.Parameter(typeof(T), "s");
+           foreach (string propName in lstSelection)
+           {
+               MemberExpression prop = GetMemberExpression(inParameter, propName);
+               var propertyInfo = (PropertyInfo)prop.Member;
+               Type pType = propertyInfo.PropertyType;
+               if (isThenBy)
+               {
+                   var thenByMethod = typeof(Queryable).GetMethods()
+                   .First(method => method.Name == "ThenBy"
+                   && method.GetParameters().Count() == 2)
+                  .MakeGenericMethod(pType);
+
+                   var ThenByDescending = typeof(Queryable).GetMethods()
+                   .First(method => method.Name == "ThenByDescending"
+                   && method.GetParameters().Count() == 2)
+                  .MakeGenericMethod(pType);
+                    if (isDescending)
+                    {
+                        return query => (IOrderedQueryable<T>)
+                            ThenByDescending.Invoke(null, new object[] { query, prop });
+                    }
+                    else
+                    {
+                        return query => (IOrderedQueryable<T>)
+                           thenByMethod.Invoke(null, new object[] { query, prop });
+                    }
+                }
+               else
+               {
+                    isThenBy = true;
+                   var orderByMethod = typeof(Queryable).GetMethods()
+                               .First(method => method.Name == "OrderBy"
+                               && method.GetParameters().Count() == 2)
+                               .MakeGenericMethod(pType);
+                   var orderByDescMethod = typeof(Queryable).GetMethods()
+                       .First(method => method.Name == "OrderByDescending"
+                           && method.GetParameters().Count() == 2)
+                           .MakeGenericMethod(pType);
+
+                    if (isDescending) {
+                        return query => (IOrderedQueryable<T>)
+                            orderByDescMethod.Invoke(null, new object[] { query, prop });
+                    }
+                    else {
+                        return query => (IOrderedQueryable<T>)
+                           orderByMethod.Invoke(null, new object[] { query, prop });
+                    }
+                }
+           }
+
+            return null;
+       }
+        
+        #endregion
+
+        /*
+
+        #region Logic33
+
+
+        public static IEnumerable<T> BuildOrderBys<T>(
+        this IEnumerable<T> source,
+        IEnumerable<string> properties)
+        {
+            if (properties == null || properties.Count() == 0) return source;
+
+            var typeOfT = typeof(T);
+
+            Type t = typeOfT;
+
+            IOrderedEnumerable<T> result = null;
+            var thenBy = false;
+
+            foreach (var item in properties)
+            {
+                var oExpr = Expression.Parameter(typeOfT, "o");
+
+                MemberExpression prop = GetMemberExpression(oExpr, item);
+                var propertyInfo = (PropertyInfo)prop.Member;
+                var propertyType = propertyInfo.PropertyType;
+                var isAscending = true;
+
+                if (thenBy)
+                {
+                    var prevExpr = Expression.Parameter(typeof(IOrderedEnumerable<T>), "prevExpr");
+                    var expr1 = Expression.Lambda<Func<IOrderedEnumerable<T>, IOrderedEnumerable<T>>>(
+                        Expression.Call(
+                            (isAscending ? thenByMethod : thenByDescendingMethod).MakeGenericMethod(typeOfT, propertyType),
+                            prevExpr,
+                            Expression.Lambda(
+                                typeof(Func<,>).MakeGenericType(typeOfT, propertyType),
+                                Expression.MakeMemberAccess(oExpr, propertyInfo),
+                                oExpr)
+                            ),
+                        prevExpr)
+                        .Compile();
+                    result = expr1(result);
+                }
+                else
+                {
+                    var prevExpr = Expression.Parameter(typeof(IEnumerable<T>), "prevExpr");
+                    var expr1 = Expression.Lambda<Func<IEnumerable<T>, IOrderedEnumerable<T>>>(
+                        Expression.Call(
+                            (isAscending ? orderByMethod : orderByDescendingMethod).MakeGenericMethod(typeOfT, propertyType),
+                            prevExpr,
+                            Expression.Lambda(
+                                typeof(Func<,>).MakeGenericType(typeOfT, propertyType),
+                                Expression.MakeMemberAccess(oExpr, propertyInfo),
+                                oExpr)
+                            ),
+                        prevExpr)
+                        .Compile();
+                    result = expr1(source);
+                    thenBy = true;
+                }
+            }
+            return result;
+        }
+
+
+        private static MethodInfo orderByMethod =
+        MethodOf(() => Enumerable.OrderBy(default(IEnumerable<object>), default(Func<object, object>)))
+            .GetGenericMethodDefinition();
+
+        private static MethodInfo orderByDescendingMethod =
+            MethodOf(() => Enumerable.OrderByDescending(default(IEnumerable<object>), default(Func<object, object>)))
+                .GetGenericMethodDefinition();
+
+        private static MethodInfo thenByMethod =
+            MethodOf(() => Enumerable.ThenBy(default(IOrderedEnumerable<object>), default(Func<object, object>)))
+                .GetGenericMethodDefinition();
+
+        private static MethodInfo thenByDescendingMethod =
+            MethodOf(() => Enumerable.ThenByDescending(default(IOrderedEnumerable<object>), default(Func<object, object>)))
+                .GetGenericMethodDefinition();
+
+        public static MethodInfo MethodOf<T>(Expression<Func<T>> method)
+        {
+            MethodCallExpression mce = (MethodCallExpression)method.Body;
+            MethodInfo mi = mce.Method;
+            return mi;
+        }
+
+
+        #endregion
+
+    */
     }
 }

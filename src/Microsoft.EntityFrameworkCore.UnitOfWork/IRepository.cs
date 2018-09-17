@@ -328,5 +328,37 @@ namespace Microsoft.EntityFrameworkCore
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                   bool disableTracking = true);
+
+
+        /// <summary>
+        /// Finds next entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        TEntity GetNextById(params object[] keyValues);
+
+
+        /// <summary>
+        /// Finds next entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        Task<TEntity> GetNextByIdAsync(params object[] keyValues);
+
+
+        /// <summary>
+        /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        TEntity GetPreviousById(params object[] keyValues);
+
+        /// <summary>
+        /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
+        /// <returns>The found entity or null.</returns>
+        Task<TEntity> GetPreviousByIdAsync(params object[] keyValues);
+
     }
 }
