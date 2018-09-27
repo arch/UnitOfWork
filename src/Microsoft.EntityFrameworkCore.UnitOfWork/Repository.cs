@@ -665,10 +665,45 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The found entity or null.</returns>
         public TEntity GetNextById(params object[] keyValues)
         {
-            return _dbSet.Find(IncrementKey(keyValues));
+            TEntity res = _dbSet.Find(IncrementKey(keyValues));
+            if (res != null)
+            {
+                return  res;
+            }
+
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            //var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                //Form Where Condition
+                Expression<Func<TEntity, bool>> expr = GetWhereConditionExpression<TEntity>(key, DecrementKey(keyValues));
+                Func<TEntity, bool> func = expr.Compile();
+                Predicate<TEntity> pred = func.Invoke;
+                TEntity currObj = lstObjs.Find(pred);
+
+                int curobj = lstObjs.IndexOf(currObj);
+                if (curobj != -1)
+                {
+                    int nxt = curobj + 1;
+                    return lstObjs.ElementAtOrDefault(nxt);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
-
-
 
         /// <summary>
         /// Finds next entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -677,34 +712,43 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The found entity or null.</returns>
         public Task<TEntity> GetNextByIdAsync(params object[] keyValues)
         {
-            return _dbSet.FindAsync(IncrementKey(keyValues));
-            /*
-           ObjectContext objectContext = ((IObjectContextAdapter)dbContext).ObjectContext;
-           ObjectSet<YourEntity> set = objectContext.CreateObjectSet<YourEntity>();
-           IEnumerable<string> keyNames = set.EntitySet.ElementType
-                                                       .KeyMembers
-                                                       .Select(k => k.Name);
-           * /
             TEntity res = _dbSet.Find(IncrementKey(keyValues));
-            //if (res != null)
+            if (res != null)
+            {
                 return Task<TEntity>.Factory.StartNew(() => res);
+            }
 
-            /*
             //No Result Found. So Order the Entity with key column and select next Entity
             IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
             IKey key = entityType.FindPrimaryKey();
             List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
-            var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
-            List<TEntity> lstObjs = GetList(null, ordByExp);
+            //var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
 
-            TEntity resExact = _dbSet.Find(cp);
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
 
-            int curobj = lstObjs.IndexOf(resExact);
-            int nxt = curobj + 1;
-            return Task<TEntity>.Factory.StartNew(() => lstObjs.ElementAtOrDefault(nxt));
-            */
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                //Form Where Condition
+                Expression<Func<TEntity, bool>> expr = GetWhereConditionExpression<TEntity>(key, DecrementKey(keyValues));
+                Func<TEntity, bool> func = expr.Compile();
+                Predicate<TEntity> pred = func.Invoke;
+                TEntity currObj = lstObjs.Find(pred);
+
+                int curobj = lstObjs.IndexOf(currObj);
+                if(curobj != -1)
+                {
+                    int nxt = curobj + 1;
+                    return Task<TEntity>.Factory.StartNew(() => lstObjs.ElementAtOrDefault(nxt));
+                }else
+                {
+                    return null;
+                }
+            }else
+            {
+                return null;
+            }
         }
-
 
         /// <summary>
         /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -713,9 +757,45 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The found entity or null.</returns>
         public TEntity GetPreviousById(params object[] keyValues)
         {
-            return _dbSet.Find(DecrementKey(keyValues));
-        }
+            TEntity res = _dbSet.Find(DecrementKey(keyValues));
+            if (res != null)
+            {
+                return  res;
+            }
 
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            //var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                //Form Where Condition
+                Expression<Func<TEntity, bool>> expr = GetWhereConditionExpression<TEntity>(key, IncrementKey(keyValues));
+                Func<TEntity, bool> func = expr.Compile();
+                Predicate<TEntity> pred = func.Invoke;
+                TEntity currObj = lstObjs.Find(pred);
+
+                int curobj = lstObjs.IndexOf(currObj);
+                if (curobj != -1)
+                {
+                    int prev = curobj - 1;
+                    return  lstObjs.ElementAtOrDefault(prev);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Finds previous entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -724,7 +804,140 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The found entity or null.</returns>
         public Task<TEntity> GetPreviousByIdAsync(params object[] keyValues)
         {
-            return _dbSet.FindAsync(DecrementKey(keyValues));
+            TEntity res = _dbSet.Find(DecrementKey(keyValues));
+            if (res != null)
+            {
+                return Task<TEntity>.Factory.StartNew(() => res);
+            }
+
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            //var ordByExp = GetOrderBy<TEntity>(keyColums[0],"asc");
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                //Form Where Condition
+                Expression<Func<TEntity, bool>> expr = GetWhereConditionExpression<TEntity>(key, IncrementKey(keyValues));
+                Func<TEntity, bool> func = expr.Compile();
+                Predicate<TEntity> pred = func.Invoke;
+                TEntity currObj = lstObjs.Find(pred);
+
+                int curobj = lstObjs.IndexOf(currObj);
+                if (curobj != -1)
+                {
+                    int prev = curobj - 1;
+                    return Task<TEntity>.Factory.StartNew(() => lstObjs.ElementAtOrDefault(prev));
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        public TEntity GetFirst()
+        {
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                    return lstObjs.FirstOrDefault<TEntity>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        public Task<TEntity> GetFirstAsync()
+        {
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                return Task<TEntity>.Factory.StartNew(() => lstObjs.FirstOrDefault<TEntity>());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Finds the Last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        public TEntity GetLast()
+        {
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums,true);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                return  lstObjs.FirstOrDefault<TEntity>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Finds the Last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        public Task<TEntity> GetLastAsync()
+        {
+            //No Result Found. So Order the Entity with key column and select next Entity
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            List<String> keyColums = key.Properties.Select(q => q.Name).ToList();
+            var ordByExp = GetOrderByExpression<TEntity>(keyColums,true);
+
+            List<TEntity> lstObjs = GetList(null, ordByExp.Compile());
+
+            if (lstObjs != null && lstObjs.Count > 0)
+            {
+                return Task<TEntity>.Factory.StartNew(() => lstObjs.FirstOrDefault<TEntity>());
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #region Next, Previous Support Methos
@@ -745,8 +958,6 @@ namespace Microsoft.EntityFrameworkCore
             return id;
         }
 
-
-
         private static MemberExpression GetMemberExpression(Expression param, string propertyName)
         {
             if (propertyName.Contains("."))
@@ -755,10 +966,8 @@ namespace Microsoft.EntityFrameworkCore
                 var subParam = Expression.Property(param, propertyName.Substring(0, index));
                 return GetMemberExpression(subParam, propertyName.Substring(index + 1));
             }
-
             return Expression.Property(param, propertyName);
         }
-
 
         public static Func<IQueryable<T>, IOrderedQueryable<T>> GetOrderBy<T>(string orderColumn, string orderType)
         {
@@ -786,72 +995,223 @@ namespace Microsoft.EntityFrameworkCore
             return (Func<IQueryable<T>, IOrderedQueryable<T>>)finalLambda.Compile();
         }
 
-
         public static Expression<Func<IQueryable<T>, IOrderedQueryable<T>>> GetOrderByExpression<T>(IEnumerable<string> lstSelection, bool isDescending = false)
        {
-
            bool isThenBy = false;
            ParameterExpression inParameter = Expression.Parameter(typeof(T), "s");
            foreach (string propName in lstSelection)
            {
-               MemberExpression prop = GetMemberExpression(inParameter, propName);
+               MemberExpression prop = GetMemberExpression(inParameter, propName); //s.mfrId
                var propertyInfo = (PropertyInfo)prop.Member;
+               var lambda = Expression.Lambda(prop, inParameter); // s => s.mfrId
                Type pType = propertyInfo.PropertyType;
-               if (isThenBy)
+               Type[] argumentTypes = new[] { typeof(T),pType };
+                if (isThenBy)
                {
                    var thenByMethod = typeof(Queryable).GetMethods()
                    .First(method => method.Name == "ThenBy"
                    && method.GetParameters().Count() == 2)
-                  .MakeGenericMethod(pType);
+                  .MakeGenericMethod(argumentTypes);
 
                    var ThenByDescending = typeof(Queryable).GetMethods()
                    .First(method => method.Name == "ThenByDescending"
                    && method.GetParameters().Count() == 2)
-                  .MakeGenericMethod(pType);
+                  .MakeGenericMethod(argumentTypes);
                     if (isDescending)
                     {
                         return query => (IOrderedQueryable<T>)
-                            ThenByDescending.Invoke(null, new object[] { query, prop });
+                            ThenByDescending.Invoke(null, new object[] { query, lambda });
                     }
                     else
                     {
                         return query => (IOrderedQueryable<T>)
-                           thenByMethod.Invoke(null, new object[] { query, prop });
+                           thenByMethod.Invoke(null, new object[] { query, lambda });
                     }
                 }
                else
                {
                     isThenBy = true;
-                   var orderByMethod = typeof(Queryable).GetMethods()
-                               .First(method => method.Name == "OrderBy"
-                               && method.GetParameters().Count() == 2)
-                               .MakeGenericMethod(pType);
-                   var orderByDescMethod = typeof(Queryable).GetMethods()
-                       .First(method => method.Name == "OrderByDescending"
-                           && method.GetParameters().Count() == 2)
-                           .MakeGenericMethod(pType);
+                    var orderByMethod = typeof(Queryable).GetMethods()
+                                .First(method => method.Name == "OrderBy"
+                                && method.GetParameters().Count() == 2)
+                                .MakeGenericMethod(argumentTypes);
+
+                    var orderByDescMethod = typeof(Queryable).GetMethods()
+                        .First(method => method.Name == "OrderByDescending"
+                            && method.GetParameters().Count() == 2)
+                           .MakeGenericMethod(argumentTypes);
 
                     if (isDescending) {
                         return query => (IOrderedQueryable<T>)
-                            orderByDescMethod.Invoke(null, new object[] { query, prop });
+                            orderByDescMethod.Invoke(null, new object[] { query, lambda });
                     }
                     else {
                         return query => (IOrderedQueryable<T>)
-                           orderByMethod.Invoke(null, new object[] { query, prop });
+                           orderByMethod.Invoke(null, new object[] { query, lambda });
                     }
                 }
            }
-
             return null;
        }
-        
+
+        static MethodInfo LikeMethod = typeof(DbFunctionsExtensions).GetMethod("Like", new Type[] { typeof(DbFunctions), typeof(string), typeof(string) });
+
+        static MethodInfo StartsWithMethod = typeof(String).GetMethod("StartsWith", new Type[] { typeof(String) });
+
+        static MethodInfo ContainsMethod = typeof(String).GetMethod("Contains", new Type[] { typeof(String) });
+
+        static MethodInfo EndsWithMethod = typeof(String).GetMethod("EndsWith", new Type[] { typeof(String) });
+
+        public static Expression<Func<T, bool>> GetWhereConditionExpression<T>(IKey key, params object[] keyValues)
+        {
+            if (key == null || keyValues == null) return null;
+            //Create the expression parameters
+            ParameterExpression inParameter = Expression.Parameter(typeof(T));
+
+            Expression whereExp = null;
+            int idx = 0;
+            foreach (IProperty p in key.Properties)
+            {
+                string dataPropertyName = p.Name;
+                Type dataType = p.PropertyInfo.PropertyType;
+                Object propVale = keyValues[idx++];
+
+                if (propVale != null)
+                {
+                    Expression LHS = GetMemberExpression(inParameter, dataPropertyName); //Expression.Property(inParameter, dataPropertyName);
+                    Expression RHS = Expression.Convert(Expression.Constant(propVale), dataType);
+
+                    if (dataType == typeof(DateTime))
+                    {
+                        //MethodInfo truncTimeMethod = typeof(EF).GetProperty("Functions").GetType().GetMethod("TruncateTime", new Type[] { typeof(DateTime?) });
+                        //MethodInfo conMethod = typeof(System.Data.Entity.DbFunctions).GetMethod("TruncateTime", new Type[] { typeof(DateTime?) });
+                        //LHS = Expression.Call(conMethod, Expression.Convert(Expression.Property(inParameter, dataPropertyName), typeof(DateTime?)));
+                        RHS = Expression.Convert(Expression.Constant(((DateTime)propVale).Date), typeof(DateTime?));
+                    }
+                    string conOperator = "eq";
+                    Expression expr = null;
+                    switch (conOperator)
+                    {
+                        case "<":
+                        case "lt":
+                            expr = Expression.LessThan(LHS, RHS);
+                            break;
+
+                        case ">":
+                        case "gt":
+                            expr = Expression.GreaterThan(LHS, RHS);
+                            break;
+
+                        case "<=":
+                        case "le":
+                            expr = Expression.LessThanOrEqual(LHS, RHS);
+                            break;
+
+                        case ">=":
+                        case "ge":
+                            expr = Expression.GreaterThanOrEqual(LHS, RHS);
+                            break;
+
+                        case "!=":
+                        case "<>":
+                        case "ne":
+                            expr = Expression.NotEqual(LHS, RHS);
+                            break;
+
+                        case "IsNull":
+                            expr = Expression.Equal(LHS, Expression.Constant(null, dataType));
+                            break;
+
+                        case "IsNotNull":
+                            expr = Expression.NotEqual(LHS, Expression.Constant(null, dataType));
+                            break;
+
+                        case "Like":
+                            if (LHS.Type != typeof(string))
+                            {
+                                LHS = Expression.Convert(Expression.Convert(LHS, typeof(object)), typeof(string));
+                            }
+                            RHS = Expression.Convert(Expression.Constant(propVale.ToString().Replace(" ", "%") + "%"), dataType);
+                            expr = Expression.Call(LikeMethod, Expression.Convert(Expression.Constant(EF.Functions), typeof(DbFunctions)), LHS, RHS);
+                            break;
+
+                        case "Contains":
+                            if (LHS.Type != typeof(string))
+                            {
+                                LHS = Expression.Convert(Expression.Convert(LHS, typeof(object)), typeof(string));
+                                RHS = Expression.Convert(Expression.Constant("%" + propVale + "%"), dataType);
+                                expr = Expression.Call(LikeMethod, Expression.Convert(Expression.Constant(EF.Functions), typeof(DbFunctions)), LHS, RHS);
+                            }
+                            else
+                            {
+                                expr = Expression.Call(LHS, ContainsMethod, Expression.Constant(propVale.ToString()));
+                            }
+                            break;
+
+                        case "StartsWith":
+                            if (LHS.Type != typeof(string))
+                            {
+                                LHS = Expression.Convert(Expression.Convert(LHS, typeof(object)), typeof(string));
+                                RHS = Expression.Convert(Expression.Constant(propVale + "%"), dataType);
+                                expr = Expression.Call(LikeMethod, Expression.Convert(Expression.Constant(EF.Functions), typeof(DbFunctions)), LHS, RHS);
+                            }
+                            else
+                            {
+                                expr = Expression.Call(LHS, StartsWithMethod, Expression.Constant(propVale.ToString()));
+                            }
+                            break;
+
+                        case "EndsWith":
+                            if (LHS.Type != typeof(string))
+                            {
+                                LHS = Expression.Convert(Expression.Convert(LHS, typeof(object)), typeof(string));
+                                RHS = Expression.Convert(Expression.Constant("%" + propVale), dataType);
+                                expr = Expression.Call(LikeMethod, Expression.Convert(Expression.Constant(EF.Functions), typeof(DbFunctions)), LHS, RHS);
+                            }
+                            else
+                            {
+                                expr = Expression.Call(LHS, EndsWithMethod, Expression.Constant(propVale.ToString()));
+                            }
+                            break;
+
+                        case "=":
+                        case "==":
+                        case "eq":
+                        default:
+                            expr = Expression.Equal(LHS, RHS);
+                            break;
+                    }
+
+                    if (whereExp == null)
+                    {
+                        whereExp = expr;
+                    }
+                    else
+                    {
+                        String condi = "AND";
+                        if (condi != null && condi.Equals("AND", StringComparison.OrdinalIgnoreCase))
+                        {
+                            whereExp = Expression.AndAlso(whereExp, expr);
+                        }
+                        else
+                        {
+                            whereExp = Expression.OrElse(whereExp, expr);
+                        }
+                    }
+                }
+
+            }
+
+            if (whereExp == null)
+            {
+                whereExp = Expression.Constant(true);
+            }
+            return Expression.Lambda<Func<T, bool>>(whereExp, inParameter);
+        }
         #endregion
 
         /*
-
         #region Logic33
-
-
         public static IEnumerable<T> BuildOrderBys<T>(
         this IEnumerable<T> source,
         IEnumerable<string> properties)

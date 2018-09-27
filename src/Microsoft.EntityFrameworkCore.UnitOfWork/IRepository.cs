@@ -360,5 +360,31 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>The found entity or null.</returns>
         Task<TEntity> GetPreviousByIdAsync(params object[] keyValues);
 
+        /// <summary>
+        /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        TEntity GetFirst();
+
+
+        /// <summary>
+        /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        Task<TEntity> GetFirstAsync();
+
+        /// <summary>
+        /// Finds the Last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        TEntity GetLast();
+
+
+        /// <summary>
+        /// Finds the last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// </summary>
+        /// <returns>The found entity or null.</returns>
+        Task<TEntity> GetLastAsync();
+
     }
 }
