@@ -742,11 +742,11 @@ namespace Microsoft.EntityFrameworkCore
                     return Task<TEntity>.Factory.StartNew(() => lstObjs.ElementAtOrDefault(nxt));
                 }else
                 {
-                    return null;
+                    return Task.FromResult<TEntity>(null);
                 }
             }else
             {
-                return null;
+                return Task.FromResult<TEntity>(null);
             }
         }
 
