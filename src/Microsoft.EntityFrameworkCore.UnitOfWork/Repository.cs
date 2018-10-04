@@ -835,12 +835,12 @@ namespace Microsoft.EntityFrameworkCore
                 }
                 else
                 {
-                    return null;
+                    return Task.FromResult<TEntity>(null);
                 }
             }
             else
             {
-                return null;
+                return Task.FromResult<TEntity>(null);
             }
         }
 
@@ -888,7 +888,7 @@ namespace Microsoft.EntityFrameworkCore
             }
             else
             {
-                return null;
+                return Task.FromResult<TEntity>(null);
             }
         }
 
@@ -936,7 +936,7 @@ namespace Microsoft.EntityFrameworkCore
             }
             else
             {
-                return null;
+                return Task.FromResult<TEntity>(null);
             }
         }
 
