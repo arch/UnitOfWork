@@ -32,9 +32,10 @@ namespace Host
         {
             // use in memory for testing.
             services
-                .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=unitofwork;uid=root;pwd=p@ssword;"))
+                .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=uow;uid=root;pwd=root1234;"))
                 //.AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
-                .AddUnitOfWork<BloggingContext>();
+                .AddUnitOfWork<BloggingContext>()
+                .AddCustomRepository<Blog, CustomBlogRepository>();
 
             services.AddMvc();
         }

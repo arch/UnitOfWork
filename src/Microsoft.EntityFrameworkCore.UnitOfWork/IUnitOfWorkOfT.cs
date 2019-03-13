@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using System.Data;
+using System.Transactions;
 
 namespace Microsoft.EntityFrameworkCore {
     /// <summary>
@@ -25,11 +26,11 @@ namespace Microsoft.EntityFrameworkCore {
         /// <summary>
         /// Saves all changes made in this context to the database with distributed transaction.
         /// </summary>
+        /// <param name="transaction">The transaction to use</param>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <param name="isolation">The IsolationLevel</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        Task<int> SaveChangesAsync(bool ensureAutoHistory = false, IsolationLevel isolation = IsolationLevel.ReadCommitted, params IUnitOfWork[] unitOfWorks);
+        Task<int> SaveChangesAsync(Transaction transaction, bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks);
 
     }
 }

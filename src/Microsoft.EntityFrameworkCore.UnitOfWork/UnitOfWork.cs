@@ -3,10 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -71,13 +74,24 @@ namespace Microsoft.EntityFrameworkCore
         /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
+        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        public IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
         {
             if (repositories == null)
             {
                 repositories = new Dictionary<Type, object>();
+            }
+
+            // what's the best way to support custom reposity?
+            if (hasCustomRepository)
+            {
+                var customRepo = _context.GetService<IRepository<TEntity>>();
+                if (customRepo != null)
+                {
+                    return customRepo;
+                }
             }
 
             var type = typeof(TEntity);
@@ -98,6 +112,38 @@ namespace Microsoft.EntityFrameworkCore
         public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlCommand(sql, parameters);
 
         /// <summary>
+        /// Executes the specified raw SQL command.
+        /// </summary>
+        /// <param name="sql">The raw SQL.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The DataTable.</returns>
+        public DataTable ExecuteDtSqlCommand(string sql, params object[] parameters)
+        {
+           SqlConnection conn = (SqlConnection) _context.Database.GetDbConnection();
+           SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.CommandTimeout = 0;
+
+            if(parameters != null && parameters.Count() > 0)
+            {
+                foreach(object obj in parameters)
+                {
+                    cmd.Parameters.Add(obj);
+                }
+            }
+
+            conn.Open();
+            // create data adapter
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            // this will query your database and return the result to your datatable
+            DataTable dataTable = new DataTable();
+            da.Fill(dataTable);
+            da.Dispose();
+            conn.Close();
+            return dataTable;
+        }
+
+
+        /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -111,7 +157,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="isolation">The IsolationLevel</param>
         /// <returns>Transaction Context</returns>
-        public IDbContextTransaction BeginTransaction(IsolationLevel isolation = IsolationLevel.ReadCommitted)
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel isolation = System.Data.IsolationLevel.ReadCommitted)
         {
             return _context.Database.BeginTransaction(isolation);
         }
@@ -154,72 +200,49 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
-            // TransactionScope will be included in .NET Core v2.0
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var ts = new TransactionScope())
             {
-                try
+                var count = 0;
+                foreach (var unitOfWork in unitOfWorks)
                 {
-                    var count = 0;
-                    foreach (var unitOfWork in unitOfWorks)
-                    {
-                        var uow = unitOfWork as UnitOfWork<DbContext>;
-                        uow.DbContext.Database.UseTransaction(transaction.GetDbTransaction());
-                        count += await uow.SaveChangesAsync(ensureAutoHistory);
-                    }
-
-                    count += await SaveChangesAsync(ensureAutoHistory);
-
-                    transaction.Commit();
-
-                    return count;
+                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory);
                 }
-                catch (Exception ex)
-                {
 
-                    transaction.Rollback();
+                count += await SaveChangesAsync(ensureAutoHistory);
 
-                    throw ex;
-                }
+                ts.Complete();
+
+                return count;
             }
         }
+
 
         /// <summary>
         /// Saves all changes made in this context to the database with distributed transaction.
         /// </summary>
+        /// <param name="transaction">The transaction to use</param>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <param name="isolation">The IsolationLevel</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, IsolationLevel isolation = IsolationLevel.ReadCommitted, params IUnitOfWork[] unitOfWorks)
+        public async Task<int> SaveChangesAsync(Transaction transaction, bool ensureAutoHistory = false,  params IUnitOfWork[] unitOfWorks)
         {
-            // TransactionScope will be included in .NET Core v2.0
-            using (var transaction = _context.Database.BeginTransaction(isolation))
+            
+             using (var ts = new TransactionScope(transaction))
             {
-                try
+                var count = 0;
+                foreach (var unitOfWork in unitOfWorks)
                 {
-                    var count = 0;
-                    foreach (var unitOfWork in unitOfWorks)
-                    {
-                        var uow = unitOfWork as UnitOfWork<DbContext>;
-                        uow.DbContext.Database.UseTransaction(transaction.GetDbTransaction());
-                        count += await uow.SaveChangesAsync(ensureAutoHistory);
-                    }
-
-                    count += await SaveChangesAsync(ensureAutoHistory);
-
-                    transaction.Commit();
-
-                    return count;
+                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory);
                 }
-                catch (Exception ex)
-                {
 
-                    transaction.Rollback();
+                count += await SaveChangesAsync(ensureAutoHistory);
 
-                    throw ex;
-                }
+                ts.Complete();
+
+                return count;
             }
         }
+
 
 
         /// <summary>

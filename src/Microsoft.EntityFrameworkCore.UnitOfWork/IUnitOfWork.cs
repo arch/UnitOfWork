@@ -26,9 +26,10 @@ namespace Microsoft.EntityFrameworkCore
         /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
+        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
+        IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
 
         /// <summary>
         /// Saves all changes made in this context to the database.
@@ -51,6 +52,15 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="parameters">The parameters.</param>
         /// <returns>The number of state entities written to database.</returns>
         int ExecuteSqlCommand(string sql, params object[] parameters);
+
+
+        /// <summary>
+        /// Executes the specified raw SQL command.
+        /// </summary>
+        /// <param name="sql">The raw SQL.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The number of state entities written to database.</returns>
+        DataTable ExecuteDtSqlCommand(string sql, params object[] parameters);
 
         /// <summary>
         /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity"/> data.
