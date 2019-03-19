@@ -21,7 +21,8 @@ public void ConfigureServices(IServiceCollection services)
     // use in memory for testing.
     services
         .AddDbContext<QuickStartContext>(opt => opt.UseInMemoryDatabase())
-        .AddUnitOfWork<QuickStartContext>();
+        .AddUnitOfWork<QuickStartContext>()
+        .AddCustomRepository<Blog, CustomBlogRepository>();
 }
 
 private readonly IUnitOfWork _unitOfWork;
