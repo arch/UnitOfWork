@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.UnitOfWork.Collections;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Tests;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities;
 using Xunit;

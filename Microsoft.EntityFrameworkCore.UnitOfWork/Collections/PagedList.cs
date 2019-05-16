@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Microsoft.EntityFrameworkCore
+namespace Microsoft.EntityFrameworkCore.UnitOfWork.Collections
 {
     /// <summary>
     /// Represents the default implementation of the <see cref="IPagedList{T}"/> interface.

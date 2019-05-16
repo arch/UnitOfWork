@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 
-namespace Host
+namespace Microsoft.EntityFrameworkCore.UnitOfWork.Host
 {
     public class Program
     {

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Host
+namespace Microsoft.EntityFrameworkCore.UnitOfWork.Host
 {
     public class Startup
     {

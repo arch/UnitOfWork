@@ -5,8 +5,9 @@ using Host.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.UnitOfWork.Collections;
 
-namespace Host.Controllers
+namespace Microsoft.EntityFrameworkCore.UnitOfWork.Host.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
