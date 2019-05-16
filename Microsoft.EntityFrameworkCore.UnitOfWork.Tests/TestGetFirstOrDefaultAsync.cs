@@ -12,7 +12,7 @@ namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
         static TestGetFirstOrDefaultAsync()
         {
             db = new InMemoryContext();
-            if (db.Countries.Any())
+            if (db.Countries.Any() == false)
             {
                 db.AddRange(TestCountries);
                 db.AddRange(TestCities);
