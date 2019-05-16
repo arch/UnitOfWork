@@ -2,7 +2,8 @@
 
 using System.Threading.Tasks;
 
-namespace Microsoft.EntityFrameworkCore {
+namespace Microsoft.EntityFrameworkCore.UnitOfWork
+{
     /// <summary>
     /// Defines the interface(s) for generic unit of work.
     /// </summary>

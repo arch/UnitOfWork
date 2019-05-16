@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Arch team. All rights reserved.
 
-namespace Microsoft.EntityFrameworkCore
+namespace Microsoft.EntityFrameworkCore.UnitOfWork
 {
     /// <summary>
     /// Defines the interfaces for <see cref="IRepository{TEntity}"/> interfaces.

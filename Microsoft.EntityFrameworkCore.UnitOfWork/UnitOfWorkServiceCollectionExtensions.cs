@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Arch team. All rights reserved.
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.EntityFrameworkCore.UnitOfWork
 {
     /// <summary>
     /// Extension methods for setting up unit of work related services in an <see cref="IServiceCollection"/>.

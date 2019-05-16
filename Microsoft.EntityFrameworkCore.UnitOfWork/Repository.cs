@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Collections;
 
-namespace Microsoft.EntityFrameworkCore
+namespace Microsoft.EntityFrameworkCore.UnitOfWork
 {
     /// <summary>
     /// Represents a default generic repository implements the <see cref="IRepository{TEntity}"/> interface.

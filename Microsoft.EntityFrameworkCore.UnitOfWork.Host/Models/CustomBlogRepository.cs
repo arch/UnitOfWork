@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Host.Models
+﻿namespace Microsoft.EntityFrameworkCore.UnitOfWork.Host.Models
 {
     public class CustomBlogRepository : Repository<Blog>, IRepository<Blog>
     {

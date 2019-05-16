@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.UnitOfWork.Tests;
 using Microsoft.EntityFrameworkCore.UnitOfWork.Tests.Entities;
 using Xunit;
 
-namespace Microsoft.EntityFrameworkCore
+namespace Microsoft.EntityFrameworkCore.UnitOfWork.Tests
 {
     public class IQueryablePageListExtensionsTests
     {
