@@ -3,20 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A306ECD5-FA8B-47D0-8455-933FB16DA526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitOfWork", "UnitOfWork\UnitOfWork.csproj", "{18AE36B2-932C-4B16-BE27-B6AB25037F6F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EBB11051-E5B2-4EBB-970B-938D28A77CA6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.EntityFrameworkCore.UnitOfWork", "src\Microsoft.EntityFrameworkCore.UnitOfWork\Microsoft.EntityFrameworkCore.UnitOfWork.csproj", "{18AE36B2-932C-4B16-BE27-B6AB25037F6F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "src\Host\Host.csproj", "{A1816206-BBF2-40D2-BC3B-0956011BAA53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitOfWork.Host", "UnitOfWork.Host\UnitOfWork.Host.csproj", "{A1816206-BBF2-40D2-BC3B-0956011BAA53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7134BBDC-D68D-4FD4-85B5-5A39EDD5BFD9}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.EntityFrameworkCore.UnitOfWork.Tests", "test\Microsoft.EntityFrameworkCore.UnitOfWork.Tests\Microsoft.EntityFrameworkCore.UnitOfWork.Tests.csproj", "{403BEC49-090B-4992-9E9C-62C33A5B8F7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitOfWork.Tests", "UnitOfWork.Tests\UnitOfWork.Tests.csproj", "{403BEC49-090B-4992-9E9C-62C33A5B8F7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
