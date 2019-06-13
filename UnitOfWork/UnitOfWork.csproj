@@ -14,7 +14,7 @@
     <PackageLicenseUrl>https://github.com/arch/UnitOfWork/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/MohMehrnia/UnitOfWork.git</RepositoryUrl>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="2.1.0" />
