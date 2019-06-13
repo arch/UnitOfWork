@@ -20,17 +20,24 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
+        private bool _IsView;
         protected readonly DbContext _dbContext;
         protected readonly DbSet<TEntity> _dbSet;
+        protected readonly DbQuery<TEntity> _dbQuery;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public Repository(DbContext dbContext)
+        /// <param name="IsView">Use DbQuery for T-SQL Views</param>/// 
+        public Repository(DbContext dbContext, bool IsView = false)
         {
+            _IsView = IsView;
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _dbSet = _dbContext.Set<TEntity>();
+            if (!_IsView)
+                _dbSet = _dbContext.Set<TEntity>();
+            else
+                _dbQuery = _dbContext.Query<TEntity>();
         }
 
         /// <summary>
@@ -48,17 +55,58 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             }
         }
 
+        /// <summary>
+        /// Gets query object by IsView value
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        private IQueryable<TEntity> getQuery()
+        {
+            if (!_IsView)
+                return _dbSet;
+            else
+                return _dbQuery;
+        }
 
         /// <summary>
         /// Gets all entities. This method is not recommended
         /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
         [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
-        public IQueryable<TEntity> GetAll()
+        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
+                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                bool disableTracking = true)
         {
-            return _dbSet;
-        }
 
+            IQueryable<TEntity> query = getQuery();
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query);
+            }
+            else
+            {
+                return query;
+            }
+        }
 
         /// <summary>
         /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
@@ -78,7 +126,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                 int pageSize = 20,
                                                 bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -126,7 +175,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                            bool disableTracking = true,
                                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -173,7 +222,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                          bool disableTracking = true)
             where TResult : class
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -224,7 +273,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                                     CancellationToken cancellationToken = default(CancellationToken))
             where TResult : class
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -264,7 +313,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                          bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -297,7 +346,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
             bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -339,7 +388,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                   bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -372,7 +421,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                   bool disableTracking = true)
         {
-            IQueryable<TEntity> query = _dbSet;
+            IQueryable<TEntity> query = getQuery();
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -404,21 +453,21 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => _dbSet.FromSql(sql, parameters);
+        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => getQuery().FromSql(sql, parameters);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public virtual TEntity Find(params object[] keyValues) => _dbSet.Find(keyValues);
+        public virtual TEntity Find(params object[] keyValues) => _dbSet.Find(keyValues) ?? throw new ArgumentNullException(nameof(_dbSet));
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public virtual Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        public virtual Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues) ?? throw new ArgumentNullException(nameof(_dbSet));
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -426,7 +475,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken) ?? throw new ArgumentNullException(nameof(_dbSet));
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -437,11 +486,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             if (predicate == null)
             {
-                return _dbSet.Count();
+                return getQuery().Count();
             }
             else
             {
-                return _dbSet.Count(predicate);
+                return getQuery().Count(predicate);
             }
         }
 
@@ -451,20 +500,31 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity to insert.</param>
         public virtual void Insert(TEntity entity)
         {
-            var entry = _dbSet.Add(entity);
+            var entry = _dbSet.Add(entity) ?? throw new ArgumentNullException(nameof(_dbSet));
         }
 
         /// <summary>
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public virtual void Insert(params TEntity[] entities) => _dbSet.AddRange(entities);
+        public virtual void Insert(params TEntity[] entities) {
+            if (!_IsView)
+                _dbSet.AddRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
 
         /// <summary>
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public virtual void Insert(IEnumerable<TEntity> entities) => _dbSet.AddRange(entities);
+        public virtual void Insert(IEnumerable<TEntity> entities)
+        {
+            if (!_IsView)
+                _dbSet.AddRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
 
         /// <summary>
         /// Inserts a new entity asynchronously.
@@ -474,13 +534,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
         public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _dbSet.AddAsync(entity, cancellationToken);
-
-            // Shadow properties?
-            //var property = _dbContext.Entry(entity).Property("Created");
-            //if (property != null) {
-            //property.CurrentValue = DateTime.Now;
-            //}
+            if (!_IsView)
+                return _dbSet.AddAsync(entity, cancellationToken);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));            
         }
 
         /// <summary>
@@ -488,7 +545,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
         /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public virtual Task InsertAsync(params TEntity[] entities) => _dbSet.AddRangeAsync(entities);
+        public virtual Task InsertAsync(params TEntity[] entities) => _dbSet.AddRangeAsync(entities) ?? throw new ArgumentNullException(nameof(_dbSet));
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
@@ -496,7 +553,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entities">The entities to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        public virtual Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddRangeAsync(entities, cancellationToken);
+        public virtual Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddRangeAsync(entities, cancellationToken) ?? throw new ArgumentNullException(nameof(_dbSet));
 
         /// <summary>
         /// Updates the specified entity.
@@ -504,7 +561,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity.</param>
         public virtual void Update(TEntity entity)
         {
-            _dbSet.Update(entity);
+            if (!_IsView)
+                _dbSet.Update(entity);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));            
         }
 
         /// <summary>
@@ -513,7 +573,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity.</param>
         public virtual void UpdateAsync(TEntity entity)
         {
-            _dbSet.Update(entity);
+            if (!_IsView)
+                _dbSet.Update(entity);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
 
         }
 
@@ -521,19 +584,37 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Update(params TEntity[] entities) => _dbSet.UpdateRange(entities);
+        public virtual void Update(params TEntity[] entities)
+        {
+            if (!_IsView)
+                _dbSet.UpdateRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));            
+        }
 
         /// <summary>
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Update(IEnumerable<TEntity> entities) => _dbSet.UpdateRange(entities);
+        public virtual void Update(IEnumerable<TEntity> entities)
+        {
+            if (!_IsView)
+                _dbSet.UpdateRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
 
         /// <summary>
         /// Deletes the specified entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        public virtual void Delete(TEntity entity) => _dbSet.Remove(entity);
+        public virtual void Delete(TEntity entity)
+        {
+            if (!_IsView)
+                _dbSet.Remove(entity);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
 
         /// <summary>
         /// Deletes the entity by the specified primary key.
@@ -542,35 +623,61 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual void Delete(object id)
         {
             // using a stub entity to mark for deletion
-            var typeInfo = typeof(TEntity).GetTypeInfo();
-            var key = _dbContext.Model.FindEntityType(typeInfo).FindPrimaryKey().Properties.FirstOrDefault();
-            var property = typeInfo.GetProperty(key?.Name);
-            if (property != null)
+            if (!_IsView)
             {
-                var entity = Activator.CreateInstance<TEntity>();
-                property.SetValue(entity, id);
-                _dbContext.Entry(entity).State = EntityState.Deleted;
-            }
-            else
-            {
-                var entity = _dbSet.Find(id);
-                if (entity != null)
+                var typeInfo = typeof(TEntity).GetTypeInfo();
+                var key = _dbContext.Model.FindEntityType(typeInfo).FindPrimaryKey().Properties.FirstOrDefault();
+                var property = typeInfo.GetProperty(key?.Name);
+                if (property != null)
                 {
-                    Delete(entity);
+                    var entity = Activator.CreateInstance<TEntity>();
+                    property.SetValue(entity, id);
+                    _dbContext.Entry(entity).State = EntityState.Deleted;
+                }
+                else
+                {
+                    var entity = _dbSet.Find(id);
+                    if (entity != null)
+                    {
+                        Delete(entity);
+                    }
                 }
             }
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
         }
 
         /// <summary>
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Delete(params TEntity[] entities) => _dbSet.RemoveRange(entities);
+        public virtual void Delete(params TEntity[] entities)
+        {
+            if (!_IsView)
+                _dbSet.RemoveRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
 
         /// <summary>
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
+        public virtual void Delete(IEnumerable<TEntity> entities)
+        {
+            if (!_IsView)
+                _dbSet.RemoveRange(entities);
+            else
+                throw new ArgumentNullException(nameof(_dbSet));
+        }
+
+        /// <summary>
+        /// Checked exists record by predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        public bool Exists(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            return getQuery().Any(predicate);
+        }
     }
 }
