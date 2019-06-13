@@ -97,7 +97,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             var type = typeof(TEntity);
             if (!repositories.ContainsKey(type))
             {
-                repositories[type] = new Repository<TEntity>(_context);
+                repositories[type] = new Repository<TEntity>(_context, IsView);
             }
 
             return (IRepository<TEntity>)repositories[type];
