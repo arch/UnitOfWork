@@ -14,7 +14,7 @@
     <PackageLicense>https://github.com/arch/UnitOfWork/blob/master/LICENSE</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/MohMehrnia/UnitOfWork.git</RepositoryUrl>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
