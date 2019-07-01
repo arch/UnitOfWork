@@ -677,7 +677,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         public bool Exists(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return getQuery().Any(predicate);
+            if (predicate != null)
+                return getQuery().Any(predicate);
+            else
+                return getQuery().Any();
         }
     }
 }
