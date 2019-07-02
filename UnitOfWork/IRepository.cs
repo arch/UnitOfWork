@@ -212,7 +212,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                 Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
