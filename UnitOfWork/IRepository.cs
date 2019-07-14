@@ -207,9 +207,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets all entities. This method is not recommended
         /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
-        IQueryable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
+                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                bool disableTracking = true);
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -301,7 +307,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entities">The entities.</param>
         void Delete(IEnumerable<TEntity> entities);
 
-
+        /// <summary>
+        /// Checked exists record by predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        bool Exists(Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
@@ -311,7 +321,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         IPagedList<TEntity> ConvertPagedList(TEntity source,
                                              int pageIndex = 0,
                                              int pageSize = 20);
-
 
 
         List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,

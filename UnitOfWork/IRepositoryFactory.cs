@@ -4,8 +4,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
     /// <summary>
@@ -17,16 +15,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
         /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
+        /// <param name="IsView"><c>True</c> if providing dbQuery for used t-sql views</param>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
-		/// <summary>
-        /// Gets the specified query repository (DbQuery) for the <typeparamref name="TEntity"/>.
-        /// </summary>
-        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IQueryRepository{TEntity}"/> interface.</returns>
-        IQueryRepository<TEntity> GetQueryRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
-    			 
+        IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false, bool IsView = false) where TEntity : class;
     }
 }

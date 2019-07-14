@@ -88,8 +88,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="IsView"><c>True</c> used dbQuery for t-sql views</param>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        public IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
+        public IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false, bool IsView = false) where TEntity : class
         {
             if (repositories == null)
             {
@@ -109,42 +110,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             var type = typeof(TEntity);
             if (!repositories.ContainsKey(type))
             {
-                repositories[type] = new Repository<TEntity>(_context);
+                repositories[type] = new Repository<TEntity>(_context, IsView);
             }
 
             return (IRepository<TEntity>)repositories[type];
-        }
-
-        /// <summary>
-		/// Gets the specified query repository (DbQuery) for the <typeparamref name="TEntity"/>.
-        /// </summary>
-        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IQueryRepository{TEntity}"/> interface.</returns>
-        public IQueryRepository<TEntity> GetQueryRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
-        {
-            if (repositories == null)
-            {
-                repositories = new Dictionary<Type, object>();
-            }
-
-            // what's the best way to support custom reposity?
-            if (hasCustomRepository)
-            {
-                var customRepo = _context.GetService<QueryRepository<TEntity>>();
-                if (customRepo != null)
-                {
-                    return customRepo;
-                }
-            }
-
-            var type = typeof(TEntity);
-            if (!repositories.ContainsKey(type))
-            {
-                repositories[type] = new Repository<TEntity>(_context);
-            }
-
-            return (IQueryRepository<TEntity>)repositories[type];
         }
 
         /// <summary>																				   
