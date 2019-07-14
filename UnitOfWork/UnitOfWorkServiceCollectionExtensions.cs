@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
@@ -15,12 +16,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <typeparam name="TContext">The type of the db context.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <param name="setupAction">The <see cref="IServiceCollection"/> to add services to.</param>
         /// <returns>The same service collection so that multiple calls can be chained.</returns>
         /// <remarks>
         /// This method only support one db context, if been called more than once, will throw exception.
         /// </remarks>
-        public static IServiceCollection AddUnitOfWork<TContext>(this IServiceCollection services) where TContext : DbContext
+        public static IServiceCollection AddUnitOfWork<TContext>(this IServiceCollection services, Action<AutoHistoryOptions> setupAction = null) where TContext : DbContext
         {
+            if (setupAction != null)
+            {
+                services.Configure(setupAction);
+
+            }
             services.AddScoped<IRepositoryFactory, UnitOfWork<TContext>>();
             // Following has a issue: IUnitOfWork cannot support multiple dbcontext/database, 
             // that means cannot call AddUnitOfWork<TContext> multiple times.

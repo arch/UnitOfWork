@@ -11,9 +11,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Options;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
+
+    public class AutoHistoryOptions
+    {
+        public AutoHistoryOptions()
+        {
+            IsAutoHistory = false;
+        }
+        public bool IsAutoHistory { get; set; }
+    }
+
     /// <summary>
     /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
     /// </summary>
@@ -23,14 +34,16 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         private readonly TContext _context;
         private bool disposed = false;
         private Dictionary<Type, object> repositories;
-
+        public bool IsAutoHistory { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public UnitOfWork(TContext context)
+        /// <param name="options">The context.</param>
+        public UnitOfWork(TContext context, IOptions<AutoHistoryOptions> options)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            IsAutoHistory = options.Value.IsAutoHistory;
         }
 
         /// <summary>
@@ -103,6 +116,38 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
+		/// Gets the specified query repository (DbQuery) for the <typeparamref name="TEntity"/>.
+        /// </summary>
+        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>An instance of type inherited from <see cref="IQueryRepository{TEntity}"/> interface.</returns>
+        public IQueryRepository<TEntity> GetQueryRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
+        {
+            if (repositories == null)
+            {
+                repositories = new Dictionary<Type, object>();
+            }
+
+            // what's the best way to support custom reposity?
+            if (hasCustomRepository)
+            {
+                var customRepo = _context.GetService<QueryRepository<TEntity>>();
+                if (customRepo != null)
+                {
+                    return customRepo;
+                }
+            }
+
+            var type = typeof(TEntity);
+            if (!repositories.ContainsKey(type))
+            {
+                repositories[type] = new Repository<TEntity>(_context);
+            }
+
+            return (IQueryRepository<TEntity>)repositories[type];
+        }
+
+        /// <summary>																				   
         /// Executes the specified raw SQL command.
         /// </summary>
         /// <param name="sql">The raw SQL.</param>
@@ -126,9 +171,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>The number of state entries written to the database.</returns>
         public int SaveChanges(bool ensureAutoHistory = false)
         {
-            if (ensureAutoHistory)
+
+            if (ensureAutoHistory || IsAutoHistory)
             {
                 _context.EnsureAutoHistory();
+
+
             }
 
             return _context.SaveChanges();
@@ -141,7 +189,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
         {
-            if (ensureAutoHistory)
+            if (ensureAutoHistory || IsAutoHistory)
             {
                 _context.EnsureAutoHistory();
             }

@@ -9,6 +9,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
 
     /// <summary>
@@ -34,6 +35,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
 
         /// <summary>
+		/// Gets the specified query repository (DbQuery) for the <typeparamref name="TEntity"/>.
+        /// </summary>
+        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>An instance of type inherited from <see cref="IQueryRepository{TEntity}"/> interface.</returns>
+        IQueryRepository<TEntity> GetQueryRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
+
+        /// <summary>																				   
         /// Saves all changes made in this context to the database.
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if sayve changes ensure auto record the change history.</param>

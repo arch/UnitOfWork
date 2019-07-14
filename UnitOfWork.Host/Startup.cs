@@ -34,7 +34,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host
             services
                 .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=uow;uid=root;pwd=root1234;"))
                 //.AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
-                .AddUnitOfWork<BloggingContext>()
+                .AddUnitOfWork<BloggingContext>(p =>
+                {
+                     p.IsAutoHistory = true;
+                })
                 .AddCustomRepository<Blog, CustomBlogRepository>();
 
             services.AddMvc();
