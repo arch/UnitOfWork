@@ -944,16 +944,16 @@ namespace Microsoft.EntityFrameworkCore
 
         private object[] IncrementKey(object[] id)
         {
-            int idx = id.Length -1;
-            int val = (int)id[idx];
+            long idx = id.Length -1;
+            long val = (long)id[idx];
             id[idx] = ++val;
             return id;
         }
 
         private object[] DecrementKey(object[] id)
         {
-            int idx = id.Length - 1;
-            int val = (int)id[idx];
+            long idx = id.Length - 1;
+            long val = (long)id[idx];
             id[idx] = --val;
             return id;
         }
