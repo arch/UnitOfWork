@@ -218,6 +218,19 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                 bool disableTracking = true);
 
         /// <summary>
+        /// Gets async all entities. This method is not recommended
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null,
+                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                bool disableTracking = true);
+
+        /// <summary>
         /// Gets the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
