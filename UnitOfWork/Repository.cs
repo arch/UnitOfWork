@@ -69,6 +69,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="pageIndex">The index of page.</param>
         /// <param name="pageSize">The size of the page.</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null,
@@ -76,9 +77,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                 Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                 int pageIndex = 0,
                                                 int pageSize = 20,
-                                                bool disableTracking = true)
+                                                bool disableTracking = true,
+                                                bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -92,6 +95,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -116,6 +124,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
         /// </param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null,
@@ -124,9 +133,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                            int pageIndex = 0,
                                                            int pageSize = 20,
                                                            bool disableTracking = true,
-                                                           CancellationToken cancellationToken = default(CancellationToken))
+                                                           CancellationToken cancellationToken = default(CancellationToken),
+                                                           bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -140,6 +151,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -162,6 +178,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="pageIndex">The index of page.</param>
         /// <param name="pageSize">The size of the page.</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual IPagedList<TResult> GetPagedList<TResult>(Expression<Func<TEntity, TResult>> selector,
@@ -170,10 +187,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                          int pageIndex = 0,
                                                          int pageSize = 20,
-                                                         bool disableTracking = true)
+                                                         bool disableTracking = true,
+                                                         bool ignoreQueryFilters = false)
             where TResult : class
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -187,6 +206,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -212,6 +236,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
         /// </param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual Task<IPagedList<TResult>> GetPagedListAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
@@ -221,10 +246,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                                     int pageIndex = 0,
                                                                     int pageSize = 20,
                                                                     bool disableTracking = true,
-                                                                    CancellationToken cancellationToken = default(CancellationToken))
+                                                                    CancellationToken cancellationToken = default(CancellationToken),
+                                                                    bool ignoreQueryFilters = false)
             where TResult : class
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -238,6 +265,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -257,14 +289,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate = null,
                                          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                         bool disableTracking = true)
+                                         bool disableTracking = true,
+                                         bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -278,6 +313,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -295,9 +335,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-            bool disableTracking = true)
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -311,6 +353,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -331,15 +378,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true)
+                                                  bool disableTracking = true,
+                                                  bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -353,6 +403,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -370,9 +425,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true)
+                                                  bool disableTracking = true, bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
+
             if (disableTracking)
             {
                 query = query.AsNoTracking();
@@ -386,6 +442,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
