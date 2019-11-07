@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A minimalistic extension to Microsoft.EntityFrameworkCore for supporting repository and unit of work patterns</Description>
+    <Authors>Mohammad Moattar</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>EfCore.UnitOfWork</PackageId>
+    <PackageProjectUrl>https://github.com/moattarwork/UnitOfWork</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/moattarwork/UnitOfWork/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>moattarwork</RepositoryUrl>
+    <RootNamespace>UnitOfWork</RootNamespace>
+    <PackageVersion>1.0.0</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.3" />
+  </ItemGroup>
+</Project>
