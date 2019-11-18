@@ -1,4 +1,4 @@
-﻿namespace UnitOfWork
+﻿namespace EfCore.UnitOfWork
 {
     public interface IRepositoryFactory
     {

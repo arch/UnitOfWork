@@ -1,10 +1,10 @@
 ﻿using System;
+using EfCore.UnitOfWork.UnitTests.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using UnitOfWork.Tests.Entities;
 
-namespace UnitOfWork.Tests
+namespace EfCore.UnitOfWork.UnitTests
 {
     public class InMemoryDbContext : DbContext
     {

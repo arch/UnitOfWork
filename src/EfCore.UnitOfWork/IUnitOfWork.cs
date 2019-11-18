@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace UnitOfWork
+namespace EfCore.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {

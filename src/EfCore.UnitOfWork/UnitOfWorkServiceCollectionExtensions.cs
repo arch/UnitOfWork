@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UnitOfWork
+namespace EfCore.UnitOfWork
 {
     public static class UnitOfWorkServiceCollectionExtensions
     {

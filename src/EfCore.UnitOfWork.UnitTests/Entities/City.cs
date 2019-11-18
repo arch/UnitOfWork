@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnitOfWork.Tests.Entities
+namespace EfCore.UnitOfWork.UnitTests.Entities
 {
     public class City
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace UnitOfWork.Tests.Entities
+namespace EfCore.UnitOfWork.UnitTests.Entities
 {
     public class Country
     {

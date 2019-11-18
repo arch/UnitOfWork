@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UnitOfWork
+namespace EfCore.UnitOfWork
 {
     public interface IRepository<TEntity> where TEntity : class
     {

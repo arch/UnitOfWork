@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace UnitOfWork
+namespace EfCore.UnitOfWork
 {
     public interface IUnitOfWork<out TContext> : IUnitOfWork where TContext : DbContext {
         TContext DbContext { get; }

@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/moattarwork/UnitOfWork</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/moattarwork/UnitOfWork/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>moattarwork</RepositoryUrl>
-    <RootNamespace>UnitOfWork</RootNamespace>
+    <RootNamespace>EfCore.UnitOfWork</RootNamespace>
     <PackageVersion>1.0.0</PackageVersion>
   </PropertyGroup>
   <ItemGroup>

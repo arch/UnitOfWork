@@ -1,6 +1,6 @@
 using System;
 
-namespace UnitOfWork.Extensions
+namespace EfCore.UnitOfWork.Extensions
 {
     public class PagingOptions
     {

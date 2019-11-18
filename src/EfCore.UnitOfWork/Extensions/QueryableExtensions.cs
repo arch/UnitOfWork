@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace UnitOfWork.Extensions
+namespace EfCore.UnitOfWork.Extensions
 {
     public static class QueryableExtensions
     {

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
-using UnitOfWork.Tests.Entities;
+using EfCore.UnitOfWork.UnitTests.Entities;
 
-namespace UnitOfWork.Tests
+namespace EfCore.UnitOfWork.UnitTests
 {
     public class RepositoryFixture
     {

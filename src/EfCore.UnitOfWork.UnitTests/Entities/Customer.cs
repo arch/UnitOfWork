@@ -1,4 +1,4 @@
-﻿namespace UnitOfWork.Tests.Entities
+﻿namespace EfCore.UnitOfWork.UnitTests.Entities
 {
     public class Customer
     {

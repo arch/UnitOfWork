@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>UnitOfWork.Tests</RootNamespace>
+    <RootNamespace>EfCore.UnitOfWork.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

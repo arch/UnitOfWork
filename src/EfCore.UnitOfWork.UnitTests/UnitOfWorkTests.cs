@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EfCore.UnitOfWork.UnitTests.Entities;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using UnitOfWork.Extensions;
-using UnitOfWork.Tests.Entities;
 using Xunit;
 
-namespace UnitOfWork.Tests
+namespace EfCore.UnitOfWork.UnitTests
 {
     public class UnitOfWorkTests : IClassFixture<RepositoryFixture>
     {
