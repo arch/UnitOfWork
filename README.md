@@ -2,6 +2,10 @@
 # EfCore.UnitOfWork
 A library for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with transaction support. The project is an initial fork from https://github.com/Arch/UnitOfWork/ in order to make the library easier to use.
 
+## Doumentation
+
+Full documentation is available [here](https://github.com/moattarwork/UnitOfWork/wiki)
+
 ## Quickly start
 
 Install the unit of work package from nuget.org.
