@@ -12,6 +12,7 @@
     <RepositoryUrl>moattarwork</RepositoryUrl>
     <RootNamespace>EfCore.UnitOfWork</RootNamespace>
     <PackageVersion>1.0.0</PackageVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="2.1.0" />
