@@ -14,6 +14,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore.Query;
     using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
 
     /// <summary>
     /// Defines the interfaces for generic repository.
@@ -210,7 +211,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        Task<TEntity> FindAsync(params object[] keyValues);
+        ValueTask<TEntity> FindAsync(params object[] keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -218,7 +219,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
+        ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -258,7 +259,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+        ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inserts a range of entities asynchronously.

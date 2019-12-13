@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
@@ -42,9 +43,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </remarks>
         public virtual void ChangeTable(string table)
         {
-            if (_dbContext.Model.FindEntityType(typeof(TEntity)).Relational() is RelationalEntityTypeAnnotations relational)
+            if (_dbContext.Model.FindEntityType(typeof(TEntity)) is IConventionEntityType relational)
             {
-                relational.TableName = table;
+                relational.SetTableName(table);
             }
         }
 
@@ -465,7 +466,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => _dbSet.FromSql(sql, parameters);
+        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => _dbSet.FromSqlRaw(sql, parameters);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -479,7 +480,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public virtual Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -487,7 +488,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+        public virtual ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -533,7 +534,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return _dbSet.AddAsync(entity, cancellationToken);
 
