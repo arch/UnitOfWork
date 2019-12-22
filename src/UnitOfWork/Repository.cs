@@ -49,18 +49,47 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             }
         }
 
-
-        /// <summary>
-        /// Gets all entities. This method is not recommended
-        /// </summary>
-        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
         public IQueryable<TEntity> GetAll()
         {
             return _dbSet;
         }
 
+        public IQueryable<TEntity> GetAll(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, bool disableTracking = true, bool ignoreQueryFilters = false)
+        {
+            IQueryable<TEntity> query = _dbSet;
 
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query);
+            }
+            else
+            {
+                return query;
+            }
+        }
         /// <summary>
         /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
         /// </summary>
@@ -507,6 +536,22 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             }
         }
 
+        /// <summary>
+        /// Gets the exists based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public bool Exists(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            if (predicate == null)
+            {
+                return _dbSet.Any();
+            }
+            else
+            {
+                return _dbSet.Any(predicate);
+            }
+        }
         /// <summary>
         /// Inserts a new entity synchronously.
         /// </summary>
