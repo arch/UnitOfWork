@@ -225,8 +225,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets all entities. This method is not recommended
         /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
         IQueryable<TEntity> GetAll();
+
+        /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
+                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                  bool disableTracking = true,
+                                                  bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -234,6 +243,13 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         /// <returns></returns>
         int Count(Expression<Func<TEntity, bool>> predicate = null);
+
+        /// <summary>
+        /// Gets the Exists record based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        bool Exists(Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Inserts a new entity synchronously.
