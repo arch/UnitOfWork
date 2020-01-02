@@ -149,9 +149,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
 
         // GET api/values
         [HttpGet]
-        public async Task<IPagedList<Blog>> Get()
+        public async Task<IList<Blog>> Get()
         {
-            return await _unitOfWork.GetRepository<Blog>().GetPagedListAsync(include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
+            return await _unitOfWork.GetRepository<Blog>().GetAllAsync(include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
         }
 
         // GET api/values/Page/5/10
