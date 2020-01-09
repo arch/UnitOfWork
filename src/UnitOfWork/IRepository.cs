@@ -283,7 +283,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Inserts a new entity synchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        void Insert(TEntity entity);
+        TEntity Insert(TEntity entity);
 
         /// <summary>
         /// Inserts a range of entities synchronously.
