@@ -570,9 +570,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Inserts a new entity synchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        public virtual void Insert(TEntity entity)
+        public virtual TEntity Insert(TEntity entity)
         {
-            var entry = _dbSet.Add(entity);
+            return _dbSet.Add(entity).Entity;
         }
 
         /// <summary>
