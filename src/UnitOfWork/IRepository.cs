@@ -275,9 +275,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets the Exists record based on a predicate.
         /// </summary>
-        /// <param name="predicate"></param>
+        /// <param name="selector"></param>
         /// <returns></returns>
-        bool Exists(Expression<Func<TEntity, bool>> predicate = null);
+        bool Exists(Expression<Func<TEntity, bool>> selector = null);
+        /// <summary>
+        /// Gets the Async Exists record based on a predicate.
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null);
 
         /// <summary>
         /// Inserts a new entity synchronously.
