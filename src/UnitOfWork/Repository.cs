@@ -551,6 +551,34 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
+        /// Gets the max based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual decimal Max(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return _dbSet.Max(selector);
+            else
+                return _dbSet.Where(predicate).Max(selector);
+        }
+
+        /// <summary>
+        /// Gets the async max based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual async Task<decimal> MaxAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return await _dbSet.MaxAsync(selector);
+            else
+                return await _dbSet.Where(predicate).MaxAsync(selector);
+        }
+
+        /// <summary>
         /// Gets the exists based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
