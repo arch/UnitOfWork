@@ -553,17 +553,33 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets the exists based on a predicate.
         /// </summary>
-        /// <param name="predicate"></param>
+        /// <param name="selector"></param>
         /// <returns></returns>
-        public bool Exists(Expression<Func<TEntity, bool>> predicate = null)
+        public bool Exists(Expression<Func<TEntity, bool>> selector = null)
         {
-            if (predicate == null)
+            if (selector == null)
             {
                 return _dbSet.Any();
             }
             else
             {
-                return _dbSet.Any(predicate);
+                return _dbSet.Any(selector);
+            }
+        }
+        /// <summary>
+        /// Gets the async exists based on a predicate.
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null)
+        {
+            if (selector == null)
+            {
+                return await _dbSet.AnyAsync();
+            }
+            else
+            {
+                return await _dbSet.AnyAsync(selector);
             }
         }
         /// <summary>
