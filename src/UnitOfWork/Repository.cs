@@ -551,6 +551,57 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
+        /// Gets async the count based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            if (predicate == null)
+            {
+                return await _dbSet.CountAsync();
+            }
+            else
+            {
+                return await _dbSet.CountAsync(predicate);
+            }
+        }
+
+        /// <summary>
+        /// Gets the long count based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public virtual long LongCount(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            if (predicate == null)
+            {
+                return _dbSet.LongCount();
+            }
+            else
+            {
+                return _dbSet.LongCount(predicate);
+            }
+        }
+
+        /// <summary>
+        /// Gets async the long count based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public virtual async Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            if (predicate == null)
+            {
+                return await _dbSet.LongCountAsync();
+            }
+            else
+            {
+                return await _dbSet.LongCountAsync(predicate);
+            }
+        }
+
+        /// <summary>
         /// Gets the max based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
@@ -576,6 +627,90 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                 return await _dbSet.MaxAsync(selector);
             else
                 return await _dbSet.Where(predicate).MaxAsync(selector);
+        }
+
+        /// <summary>
+        /// Gets the min based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual decimal Min(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return _dbSet.Min(selector);
+            else
+                return _dbSet.Where(predicate).Min(selector);
+        }
+
+        /// <summary>
+        /// Gets the async min based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual async Task<decimal> MinAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return await _dbSet.MinAsync(selector);
+            else
+                return await _dbSet.Where(predicate).MinAsync(selector);
+        }
+
+        /// <summary>
+        /// Gets the average based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual decimal Average(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return _dbSet.Average(selector);
+            else
+                return _dbSet.Where(predicate).Average(selector);
+        }
+
+        /// <summary>
+        /// Gets the async average based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual async Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return await _dbSet.AverageAsync(selector);
+            else
+                return await _dbSet.Where(predicate).AverageAsync(selector);
+        }
+
+        /// <summary>
+        /// Gets the sum based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual decimal Sum(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return _dbSet.Sum(selector);
+            else
+                return _dbSet.Where(predicate).Sum(selector);
+        }
+
+        /// <summary>
+        /// Gets the async sum based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        public virtual async Task<decimal> SumAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        {
+            if (predicate == null)
+                return await _dbSet.SumAsync(selector);
+            else
+                return await _dbSet.Where(predicate).SumAsync(selector);
         }
 
         /// <summary>
@@ -793,5 +928,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                 return await query.ToListAsync();
             }
         }
+        
     }
 }
