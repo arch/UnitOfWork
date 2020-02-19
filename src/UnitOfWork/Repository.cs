@@ -607,7 +607,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type
+        public virtual T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
                 return _dbSet.Max(selector);
@@ -621,7 +621,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual async Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type
+        public virtual async Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
                 return await _dbSet.MaxAsync(selector);
@@ -635,7 +635,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type
+        public virtual T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
                 return _dbSet.Min(selector);
@@ -649,7 +649,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual async Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type
+        public virtual async Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
                 return await _dbSet.MinAsync(selector);

@@ -299,7 +299,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type;
+        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
 
         /// <summary>
         /// Gets the async max based on a predicate.
@@ -307,7 +307,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T : Type;
+        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
 
         /// <summary>
         /// Gets the min based on a predicate.
@@ -315,7 +315,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type;
+        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
 
         /// <summary>
         /// Gets the async min based on a predicate.
@@ -323,7 +323,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null) where T:Type;
+        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
 
         /// <summary>
         /// Gets the average based on a predicate.
