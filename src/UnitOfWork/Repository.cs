@@ -928,6 +928,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                 return await query.ToListAsync();
             }
         }
-        
+
+        /// <summary>
+        /// Change entity state for patch method on web api.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// /// <param name="state">The entity state.</param>
+        public void ChangeEntityState(TEntity entity, EntityState state)
+        {
+            _dbContext.Entry(entity).State = state;
+        }
     }
 }

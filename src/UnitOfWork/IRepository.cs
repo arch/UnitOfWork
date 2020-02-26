@@ -15,6 +15,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     using Microsoft.EntityFrameworkCore.Query;
     using Arch.EntityFrameworkCore.UnitOfWork.Collections;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Defines the interfaces for generic repository.
@@ -452,5 +453,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="entities">The entities.</param>
         void Delete(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Change entity state for patch method on web api.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// /// <param name="state">The entity state.</param>
+        void ChangeEntityState(TEntity entity, EntityState state);
     }
 }
