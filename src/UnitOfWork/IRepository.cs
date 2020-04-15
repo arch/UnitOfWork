@@ -15,6 +15,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     using Microsoft.EntityFrameworkCore.Query;
     using Arch.EntityFrameworkCore.UnitOfWork.Collections;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Defines the interfaces for generic repository.
@@ -273,11 +274,102 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         int Count(Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
-        /// Gets the Exists record based on a predicate.
+        /// Gets async the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        bool Exists(Expression<Func<TEntity, bool>> predicate = null);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null);
+
+        /// <summary>
+        /// Gets the long count based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        long LongCount(Expression<Func<TEntity, bool>> predicate = null);
+
+        /// <summary>
+        /// Gets async the long count based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null);
+
+        /// <summary>
+        /// Gets the max based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+
+        /// <summary>
+        /// Gets the async max based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+
+        /// <summary>
+        /// Gets the min based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+
+        /// <summary>
+        /// Gets the async min based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+
+        /// <summary>
+        /// Gets the average based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        decimal Average (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+
+        /// <summary>
+            /// Gets the async average based on a predicate.
+            /// </summary>
+            /// <param name="predicate"></param>
+            ///  /// <param name="selector"></param>
+            /// <returns>decimal</returns>
+        Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+
+        /// <summary>
+        /// Gets the sum based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        decimal Sum (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+
+        /// <summary>
+        /// Gets the async sum based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <returns>decimal</returns>
+        Task<decimal> SumAsync (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+
+        /// <summary>
+        /// Gets the Exists record based on a predicate.
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        bool Exists(Expression<Func<TEntity, bool>> selector = null);
+        /// <summary>
+        /// Gets the Async Exists record based on a predicate.
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null);
 
         /// <summary>
         /// Inserts a new entity synchronously.
@@ -361,5 +453,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="entities">The entities.</param>
         void Delete(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Change entity state for patch method on web api.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// /// <param name="state">The entity state.</param>
+        void ChangeEntityState(TEntity entity, EntityState state);
     }
 }
