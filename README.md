@@ -1,6 +1,6 @@
 
-# UnitOfWork
 [![time tracker](https://wakatime.com/badge/github/AIKICo/UnitOfWork.svg)](https://wakatime.com/badge/github/AIKICo/UnitOfWork)
+# UnitOfWork
 A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.
 
 ## Support MySQL multiple databases/tables sharding
