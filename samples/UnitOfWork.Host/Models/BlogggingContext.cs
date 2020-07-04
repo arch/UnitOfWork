@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Models
+namespace UnitOfWork.Host.Models
 {
     public class BloggingContext : DbContext
     {
@@ -12,10 +12,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Models
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.EnableAutoHistory(null);
-        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.EnableAutoHistory(null);
     }
 
     public class Blog

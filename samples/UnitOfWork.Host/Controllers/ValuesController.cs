@@ -6,6 +6,7 @@ using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using Arch.EntityFrameworkCore.UnitOfWork.Host.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using UnitOfWork.Host.Models;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
 {
