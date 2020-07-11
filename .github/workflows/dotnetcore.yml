@@ -29,5 +29,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Pack nuget Package
         run: dotnet pack --configuration Release
-      - name: push package to myget
+      - name: Push Package To Myget
         run: dotnet nuget push **/*.nupkg -s https://www.myget.org/F/my/api/v3/index.json -k ${{ secrets.NUGET_DEPLOY_KEY }}
