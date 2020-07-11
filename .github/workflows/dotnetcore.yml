@@ -26,7 +26,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NUGET_DEPLOY_KEY }}
+          nuget-version: '5.x'
       - name: Pack nuget Package
         run: dotnet pack --configuration Release
       - name: Push Package To Myget
