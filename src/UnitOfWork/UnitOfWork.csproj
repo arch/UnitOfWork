@@ -17,6 +17,8 @@
     <Version>3.1.16</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <LangVersion>8</LangVersion>
+    <PackageVersion>3.1.17</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="3.1.3" />

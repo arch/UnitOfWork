@@ -362,8 +362,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the Exists record based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        bool Exists(Expression<Func<TEntity, bool>> selector = null);
+        bool Exists(Expression<Func<TEntity, bool>> selector = null, bool ignoreQueryFilters = false);
         /// <summary>
         /// Gets the Async Exists record based on a predicate.
         /// </summary>

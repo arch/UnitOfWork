@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+// ReSharper disable All
 
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
@@ -53,10 +54,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets all entities. This method is not recommended
         /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        public IQueryable<TEntity> GetAll()
-        {
-            return _dbSet;
-        }
+        public IQueryable<TEntity> GetAll() => _dbSet;
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -607,12 +605,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
+        public virtual T Max<T>(
+            Expression<Func<TEntity, bool>> predicate = null, 
+            Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
-                return _dbSet.Max(selector);
+                return _dbSet.Max(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return _dbSet.Where(predicate).Max(selector);
+                return _dbSet.Where(predicate).Max(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -624,9 +624,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual async Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
-                return await _dbSet.MaxAsync(selector);
+                return await _dbSet.MaxAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return await _dbSet.Where(predicate).MaxAsync(selector);
+                return await _dbSet.Where(predicate).MaxAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -638,9 +638,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
-                return _dbSet.Min(selector);
+                return _dbSet.Min(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return _dbSet.Where(predicate).Min(selector);
+                return _dbSet.Where(predicate).Min(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -652,9 +652,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual async Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
         {
             if (predicate == null)
-                return await _dbSet.MinAsync(selector);
+                return await _dbSet.MinAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return await _dbSet.Where(predicate).MinAsync(selector);
+                return await _dbSet.Where(predicate).MinAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -666,9 +666,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual decimal Average(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
         {
             if (predicate == null)
-                return _dbSet.Average(selector);
+                return _dbSet.Average(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return _dbSet.Where(predicate).Average(selector);
+                return _dbSet.Where(predicate).Average(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -680,9 +680,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual async Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
         {
             if (predicate == null)
-                return await _dbSet.AverageAsync(selector);
+                return await _dbSet.AverageAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return await _dbSet.Where(predicate).AverageAsync(selector);
+                return await _dbSet.Where(predicate).AverageAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -691,12 +691,13 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual decimal Sum(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        public virtual decimal Sum(Expression<Func<TEntity, bool>> predicate = null, 
+            Expression<Func<TEntity, decimal>> selector = null)
         {
             if (predicate == null)
-                return _dbSet.Sum(selector);
+                return _dbSet.Sum(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return _dbSet.Where(predicate).Sum(selector);
+                return _dbSet.Where(predicate).Sum(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
@@ -705,54 +706,40 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
         /// <returns>decimal</returns>
-        public virtual async Task<decimal> SumAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        public virtual async Task<decimal> SumAsync(
+            Expression<Func<TEntity, bool>> predicate = null, 
+            Expression<Func<TEntity, decimal>> selector = null)
         {
             if (predicate == null)
-                return await _dbSet.SumAsync(selector);
+                return await _dbSet.SumAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
             else
-                return await _dbSet.Where(predicate).SumAsync(selector);
+                return await _dbSet.Where(predicate).SumAsync(selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
         /// <summary>
         /// Gets the exists based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        public bool Exists(Expression<Func<TEntity, bool>> selector = null)
+        public bool Exists(Expression<Func<TEntity, bool>> selector = null, bool ignoreQueryFilters = false)
         {
-            if (selector == null)
-            {
-                return _dbSet.Any();
-            }
-            else
-            {
-                return _dbSet.Any(selector);
-            }
+            IQueryable<TEntity> query = _dbSet;
+            if (ignoreQueryFilters) query = query.IgnoreQueryFilters();
+            return selector == null ? query.Any() : query.Any(selector);
         }
         /// <summary>
         /// Gets the async exists based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null)
-        {
-            if (selector == null)
-            {
-                return await _dbSet.AnyAsync();
-            }
-            else
-            {
-                return await _dbSet.AnyAsync(selector);
-            }
-        }
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null) => selector == null ? await _dbSet.AnyAsync() : await _dbSet.AnyAsync(selector);
+
         /// <summary>
         /// Inserts a new entity synchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        public virtual TEntity Insert(TEntity entity)
-        {
-            return _dbSet.Add(entity).Entity;
-        }
+        public virtual TEntity Insert(TEntity entity) => _dbSet.Add(entity).Entity;
 
         /// <summary>
         /// Inserts a range of entities synchronously.
@@ -772,17 +759,13 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        public virtual ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return _dbSet.AddAsync(entity, cancellationToken);
+        public virtual ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddAsync(entity, cancellationToken);
 
-            // Shadow properties?
-            //var property = _dbContext.Entry(entity).Property("Created");
-            //if (property != null) {
-            //property.CurrentValue = DateTime.Now;
-            //}
-        }
-
+        // Shadow properties?
+        //var property = _dbContext.Entry(entity).Property("Created");
+        //if (property != null) {
+        //property.CurrentValue = DateTime.Now;
+        //}
         /// <summary>
         /// Inserts a range of entities asynchronously.
         /// </summary>
@@ -802,20 +785,13 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public virtual void Update(TEntity entity)
-        {
-            _dbSet.Update(entity);
-        }
+        public virtual void Update(TEntity entity) => _dbSet.Update(entity);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public virtual void UpdateAsync(TEntity entity)
-        {
-            _dbSet.Update(entity);
-
-        }
+        public virtual void UpdateAsync(TEntity entity) => _dbSet.Update(entity);
 
         /// <summary>
         /// Updates the specified entities.
@@ -844,7 +820,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
             var key = _dbContext.Model.FindEntityType(typeInfo).FindPrimaryKey().Properties.FirstOrDefault();
-            var property = typeInfo.GetProperty(key?.Name);
+            var property = typeInfo.GetProperty(key?.Name ?? string.Empty);
             if (property != null)
             {
                 var entity = Activator.CreateInstance<TEntity>();
@@ -877,10 +853,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets all entities. This method is not recommended
         /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        public async Task<IList<TEntity>> GetAllAsync()
-        {
-            return  await _dbSet.ToListAsync();
-        }
+        public async Task<IList<TEntity>> GetAllAsync() => await _dbSet.ToListAsync();
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -934,9 +907,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// /// <param name="state">The entity state.</param>
-        public void ChangeEntityState(TEntity entity, EntityState state)
-        {
-            _dbContext.Entry(entity).State = state;
-        }
+        public void ChangeEntityState(TEntity entity, EntityState state) => _dbContext.Entry(entity).State = state;
     }
 }
