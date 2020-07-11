@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitOfWork", "src\UnitOfWor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitOfWork.Tests", "test\UnitOfWork.Tests\UnitOfWork.Tests.csproj", "{FDAA4086-21E8-4939-8539-0A1723EC4922}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitOfWork.Host", "samples\UnitOfWork.Host\UnitOfWork.Host.csproj", "{207188FE-2344-4DC1-8656-E02CEF741422}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +32,6 @@ Global
 		{FDAA4086-21E8-4939-8539-0A1723EC4922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDAA4086-21E8-4939-8539-0A1723EC4922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDAA4086-21E8-4939-8539-0A1723EC4922}.Release|Any CPU.Build.0 = Release|Any CPU
-		{207188FE-2344-4DC1-8656-E02CEF741422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{207188FE-2344-4DC1-8656-E02CEF741422}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{207188FE-2344-4DC1-8656-E02CEF741422}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{207188FE-2344-4DC1-8656-E02CEF741422}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +39,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FD8010C2-982B-470E-A9A5-C0DFA2D14809} = {14F86AF9-D2C9-468D-8C71-9BC4785F68A0}
 		{FDAA4086-21E8-4939-8539-0A1723EC4922} = {D3C7F3F5-4AB2-4868-8D2C-516DFCFDC349}
-		{207188FE-2344-4DC1-8656-E02CEF741422} = {9661083F-4BCD-42D4-9EF8-1187DD9EDA60}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7B21B30-8D65-449B-B192-64726743EFC3}

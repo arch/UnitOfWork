@@ -369,8 +369,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the Async Exists record based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null);
+        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Inserts a new entity synchronously.

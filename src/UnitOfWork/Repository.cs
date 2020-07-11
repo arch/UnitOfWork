@@ -732,8 +732,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async exists based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null) => selector == null ? await _dbSet.AnyAsync() : await _dbSet.AnyAsync(selector);
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null, bool ignoreQueryFilters = false)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            if (ignoreQueryFilters) query = query.IgnoreQueryFilters();
+            return selector == null ? await query.AnyAsync() : await query.AnyAsync(selector);
+        } 
 
         /// <summary>
         /// Inserts a new entity synchronously.
