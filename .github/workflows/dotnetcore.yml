@@ -30,4 +30,4 @@ jobs:
       - name: Pack nuget Package
         run: dotnet pack --configuration Release
       - name: Push Package To Myget
-        run: dotnet nuget push **/*.nupkg -s https://www.myget.org/F/my/api/v3/index.json -k ${{ secrets.NUGET_DEPLOY_KEY }}
+        run: dotnet nuget push **/*.nupkg --skip-duplicate --no-symbols true -s https://www.myget.org/F/my/api/v3/index.json --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
