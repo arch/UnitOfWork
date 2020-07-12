@@ -21,13 +21,4 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release
-  
-  deploy:    
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pack nuget Package
-        run: dotnet pack --configuration Release
-      - name: Push Package To Myget
-        run: dotnet nuget push **/*.nupkg --skip-duplicate --no-symbols true -s https://www.myget.org/F/my/api/v3/index.json --api-key 0afee957-f20e-4af4-a998-625cb96b9de1
-          
+ 
