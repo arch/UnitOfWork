@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
             }
 
             var count = await source.CountAsync(cancellationToken).ConfigureAwait(false);
+
+            if (count == 0)
+                return new PagedList<T>()
+                {
+                    PageIndex = pageIndex,
+                    PageSize = pageSize,
+                    IndexFrom = indexFrom,
+                    TotalCount = count,
+                    Items = new List<T>(),
+                    TotalPages = 0
+                };
+
             var items = await source.Skip((pageIndex - indexFrom) * pageSize)
                                     .Take(pageSize).ToListAsync(cancellationToken).ConfigureAwait(false);
 
