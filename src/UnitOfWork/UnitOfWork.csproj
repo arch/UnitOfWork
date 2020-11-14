@@ -14,11 +14,11 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AikiCo/UnitOfWork</RepositoryUrl>
-    <Version>3.1.24</Version>
+    <Version>5.0.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>8</LangVersion>
-    <PackageVersion>3.1.24</PackageVersion>
+    <PackageVersion>5.0.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <UserSecretsId>cba3a20d-f192-445e-9058-fdbacec3fea3</UserSecretsId>
   </PropertyGroup>
