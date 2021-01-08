@@ -4,6 +4,8 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using System.Threading;
+
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
     using System;
@@ -44,8 +46,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Asynchronously saves all changes made in this unit of work to the database.
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        Task<int> SaveChangesAsync(bool ensureAutoHistory = false);
+        Task<int> SaveChangesAsync(bool ensureAutoHistory = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Executes the specified raw SQL command.

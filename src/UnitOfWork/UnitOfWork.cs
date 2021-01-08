@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
@@ -138,15 +139,16 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Asynchronously saves all changes made in this unit of work to the database.
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, CancellationToken cancellationToken = default)
         {
             if (ensureAutoHistory)
             {
                 _context.EnsureAutoHistory();
             }
 
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
 
         /// <summary>
@@ -154,18 +156,19 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
         /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
-        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, CancellationToken cancellationToken = default, params IUnitOfWork[] unitOfWorks)
         {
             using (var ts = new TransactionScope())
             {
                 var count = 0;
                 foreach (var unitOfWork in unitOfWorks)
                 {
-                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory);
+                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory, cancellationToken);
                 }
 
-                count += await SaveChangesAsync(ensureAutoHistory);
+                count += await SaveChangesAsync(ensureAutoHistory, cancellationToken);
 
                 ts.Complete();
 
