@@ -379,6 +379,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            CancellationToken cancellationToken = default,
             bool disableTracking = true,
             bool ignoreQueryFilters = false)
         {
@@ -406,11 +407,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
             if (orderBy != null)
             {
-                return await orderBy(query).FirstOrDefaultAsync();
+                return await orderBy(query).FirstOrDefaultAsync(cancellationToken);
             }
             else
             {
-                return await query.FirstOrDefaultAsync();
+                return await query.FirstOrDefaultAsync(cancellationToken);
             }
         }
 
@@ -469,6 +470,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                  CancellationToken cancellationToken = default,
                                                   bool disableTracking = true, bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
@@ -495,11 +497,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
             if (orderBy != null)
             {
-                return await orderBy(query).Select(selector).FirstOrDefaultAsync();
+                return await orderBy(query).Select(selector).FirstOrDefaultAsync(cancellationToken);
             }
             else
             {
-                return await query.Select(selector).FirstOrDefaultAsync();
+                return await query.Select(selector).FirstOrDefaultAsync(cancellationToken);
             }
         }
 
@@ -522,16 +524,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        public virtual ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyValues) => _dbSet.FindAsync(keyValues, cancellationToken);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        public virtual ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -554,16 +557,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets async the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
             {
-                return await _dbSet.CountAsync();
+                return await _dbSet.CountAsync(cancellationToken);
             }
             else
             {
-                return await _dbSet.CountAsync(predicate);
+                return await _dbSet.CountAsync(predicate, cancellationToken);
             }
         }
 
@@ -588,16 +592,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets async the long count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public virtual async Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
             {
-                return await _dbSet.LongCountAsync();
+                return await _dbSet.LongCountAsync(cancellationToken);
             }
             else
             {
-                return await _dbSet.LongCountAsync(predicate);
+                return await _dbSet.LongCountAsync(predicate, cancellationToken);
             }
         }
 
@@ -619,14 +624,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async max based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// <param name="selector"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>decimal</returns>
-        public virtual async Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
+        public virtual async Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
-                return await _dbSet.MaxAsync(selector);
+                return await _dbSet.MaxAsync(selector, cancellationToken);
             else
-                return await _dbSet.Where(predicate).MaxAsync(selector);
+                return await _dbSet.Where(predicate).MaxAsync(selector, cancellationToken);
         }
 
         /// <summary>
@@ -647,14 +653,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async min based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// <param name="selector"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>decimal</returns>
-        public virtual async Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null)
+        public virtual async Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
-                return await _dbSet.MinAsync(selector);
+                return await _dbSet.MinAsync(selector, cancellationToken);
             else
-                return await _dbSet.Where(predicate).MinAsync(selector);
+                return await _dbSet.Where(predicate).MinAsync(selector, cancellationToken);
         }
 
         /// <summary>
@@ -675,14 +682,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async average based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// <param name="selector"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>decimal</returns>
-        public virtual async Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        public virtual async Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
-                return await _dbSet.AverageAsync(selector);
+                return await _dbSet.AverageAsync(selector, cancellationToken);
             else
-                return await _dbSet.Where(predicate).AverageAsync(selector);
+                return await _dbSet.Where(predicate).AverageAsync(selector, cancellationToken);
         }
 
         /// <summary>
@@ -703,14 +711,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async sum based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// <param name="selector"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>decimal</returns>
-        public virtual async Task<decimal> SumAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null)
+        public virtual async Task<decimal> SumAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, CancellationToken cancellationToken = default)
         {
             if (predicate == null)
-                return await _dbSet.SumAsync(selector);
+                return await _dbSet.SumAsync(selector, cancellationToken);
             else
-                return await _dbSet.Where(predicate).SumAsync(selector);
+                return await _dbSet.Where(predicate).SumAsync(selector, cancellationToken);
         }
 
         /// <summary>
@@ -733,16 +742,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the async exists based on a predicate.
         /// </summary>
         /// <param name="selector"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null)
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> selector = null, CancellationToken cancellationToken = default)
         {
             if (selector == null)
             {
-                return await _dbSet.AnyAsync();
+                return await _dbSet.AnyAsync(cancellationToken);
             }
             else
             {
-                return await _dbSet.AnyAsync(selector);
+                return await _dbSet.AnyAsync(selector, cancellationToken);
             }
         }
         /// <summary>
@@ -876,10 +886,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets all entities. This method is not recommended
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        public async Task<IList<TEntity>> GetAllAsync()
+        public async Task<IList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return  await _dbSet.ToListAsync();
+            return  await _dbSet.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -888,6 +899,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
@@ -895,6 +907,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, 
+            CancellationToken cancellationToken = default,
             bool disableTracking = true, bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
@@ -921,11 +934,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
             if (orderBy != null)
             {
-                return await orderBy(query).ToListAsync();
+                return await orderBy(query).ToListAsync(cancellationToken);
             }
             else
             {
-                return await query.ToListAsync();
+                return await query.ToListAsync(cancellationToken);
             }
         }
 
