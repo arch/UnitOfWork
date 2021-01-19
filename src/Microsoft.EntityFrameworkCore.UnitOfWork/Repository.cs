@@ -38,7 +38,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <remarks>
         /// This only been used for supporting multiple tables in the same model. This require the tables in the same database.
         /// </remarks>
-        public void ChangeTable(string table)
+        public virtual void ChangeTable(string table)
         {
             if (_dbContext.Model.FindEntityType(typeof(TEntity)).Relational() is RelationalEntityTypeAnnotations relational)
             {
@@ -69,7 +69,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null,
                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                 Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                 int pageIndex = 0,
@@ -116,7 +116,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null,
                                                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                            int pageIndex = 0,
@@ -162,7 +162,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IPagedList{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public IPagedList<TResult> GetPagedList<TResult>(Expression<Func<TEntity, TResult>> selector,
+        public virtual IPagedList<TResult> GetPagedList<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                          Expression<Func<TEntity, bool>> predicate = null,
                                                          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -212,7 +212,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public Task<IPagedList<TResult>> GetPagedListAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
+        public virtual Task<IPagedList<TResult>> GetPagedListAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                                     Expression<Func<TEntity, bool>> predicate = null,
                                                                     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                                     Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -257,7 +257,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate = null,
                                          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                          bool disableTracking = true)
@@ -290,7 +290,7 @@ namespace Microsoft.EntityFrameworkCore
 
 
         /// <inheritdoc />
-        public async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
             bool disableTracking = true)
@@ -331,7 +331,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
+        public virtual TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -364,7 +364,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <inheritdoc />
-        public async Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
+        public virtual async Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -402,21 +402,21 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public IQueryable<TEntity> FromSql(string sql, params object[] parameters) => _dbSet.FromSql(sql, parameters);
+        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => _dbSet.FromSql(sql, parameters);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public TEntity Find(params object[] keyValues) => _dbSet.Find(keyValues);
+        public virtual TEntity Find(params object[] keyValues) => _dbSet.Find(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        public virtual Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -424,14 +424,14 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        public Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
 
         /// <summary>
         /// Gets the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int Count(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual int Count(Expression<Func<TEntity, bool>> predicate = null)
         {
             if (predicate == null)
             {
@@ -447,7 +447,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Inserts a new entity synchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        public void Insert(TEntity entity)
+        public virtual void Insert(TEntity entity)
         {
             var entry = _dbSet.Add(entity);
         }
@@ -456,13 +456,13 @@ namespace Microsoft.EntityFrameworkCore
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public void Insert(params TEntity[] entities) => _dbSet.AddRange(entities);
+        public virtual void Insert(params TEntity[] entities) => _dbSet.AddRange(entities);
 
         /// <summary>
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public void Insert(IEnumerable<TEntity> entities) => _dbSet.AddRange(entities);
+        public virtual void Insert(IEnumerable<TEntity> entities) => _dbSet.AddRange(entities);
 
         /// <summary>
         /// Inserts a new entity asynchronously.
@@ -470,7 +470,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="entity">The entity to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        public Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return _dbSet.AddAsync(entity, cancellationToken);
 
@@ -486,7 +486,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
         /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public Task InsertAsync(params TEntity[] entities) => _dbSet.AddRangeAsync(entities);
+        public virtual Task InsertAsync(params TEntity[] entities) => _dbSet.AddRangeAsync(entities);
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
@@ -494,13 +494,13 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="entities">The entities to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        public Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddRangeAsync(entities, cancellationToken);
+        public virtual Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => _dbSet.AddRangeAsync(entities, cancellationToken);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             _dbSet.Update(entity);
         }
@@ -509,7 +509,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public void UpdateAsync(TEntity entity)
+        public virtual void UpdateAsync(TEntity entity)
         {
             _dbSet.Update(entity);
 
@@ -519,25 +519,25 @@ namespace Microsoft.EntityFrameworkCore
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Update(params TEntity[] entities) => _dbSet.UpdateRange(entities);
+        public virtual void Update(params TEntity[] entities) => _dbSet.UpdateRange(entities);
 
         /// <summary>
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Update(IEnumerable<TEntity> entities) => _dbSet.UpdateRange(entities);
+        public virtual void Update(IEnumerable<TEntity> entities) => _dbSet.UpdateRange(entities);
 
         /// <summary>
         /// Deletes the specified entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        public void Delete(TEntity entity) => _dbSet.Remove(entity);
+        public virtual void Delete(TEntity entity) => _dbSet.Remove(entity);
 
         /// <summary>
         /// Deletes the entity by the specified primary key.
         /// </summary>
         /// <param name="id">The primary key value.</param>
-        public void Delete(object id)
+        public virtual void Delete(object id)
         {
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
@@ -563,15 +563,13 @@ namespace Microsoft.EntityFrameworkCore
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Delete(params TEntity[] entities) => _dbSet.RemoveRange(entities);
+        public virtual void Delete(params TEntity[] entities) => _dbSet.RemoveRange(entities);
 
         /// <summary>
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
-
-
+        public virtual void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
 
         /// <summary>
         /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
@@ -582,7 +580,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                 Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                 bool disableTracking = true)
@@ -625,7 +623,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </param>
         /// <returns>An <see cref="List{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        public Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
+        public virtual Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
                                                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                            bool disableTracking = true,
@@ -663,7 +661,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public TEntity GetNextById(params object[] keyValues)
+        public virtual TEntity GetNextById(params object[] keyValues)
         {
             TEntity res = _dbSet.Find(IncrementKey(keyValues));
             if (res != null)
@@ -710,7 +708,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public Task<TEntity> GetNextByIdAsync(params object[] keyValues)
+        public virtual Task<TEntity> GetNextByIdAsync(params object[] keyValues)
         {
             TEntity res = _dbSet.Find(IncrementKey(keyValues));
             if (res != null)
@@ -755,7 +753,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public TEntity GetPreviousById(params object[] keyValues)
+        public virtual TEntity GetPreviousById(params object[] keyValues)
         {
             TEntity res = _dbSet.Find(DecrementKey(keyValues));
             if (res != null)
@@ -802,7 +800,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public Task<TEntity> GetPreviousByIdAsync(params object[] keyValues)
+        public virtual Task<TEntity> GetPreviousByIdAsync(params object[] keyValues)
         {
             TEntity res = _dbSet.Find(DecrementKey(keyValues));
             if (res != null)
@@ -848,7 +846,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <returns>The found entity or null.</returns>
-        public TEntity GetFirst()
+        public virtual TEntity GetFirst()
         {
             //No Result Found. So Order the Entity with key column and select next Entity
             IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
@@ -872,7 +870,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Finds the first entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <returns>The found entity or null.</returns>
-        public Task<TEntity> GetFirstAsync()
+        public virtual Task<TEntity> GetFirstAsync()
         {
             //No Result Found. So Order the Entity with key column and select next Entity
             IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
@@ -896,7 +894,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Finds the Last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <returns>The found entity or null.</returns>
-        public TEntity GetLast()
+        public virtual TEntity GetLast()
         {
             //No Result Found. So Order the Entity with key column and select next Entity
             IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
@@ -920,7 +918,7 @@ namespace Microsoft.EntityFrameworkCore
         /// Finds the Last entity with order by primary key. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <returns>The found entity or null.</returns>
-        public Task<TEntity> GetLastAsync()
+        public virtual Task<TEntity> GetLastAsync()
         {
             //No Result Found. So Order the Entity with key column and select next Entity
             IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
@@ -944,17 +942,37 @@ namespace Microsoft.EntityFrameworkCore
 
         private object[] IncrementKey(object[] id)
         {
-            long idx = id.Length -1;
-            long val = (long)id[idx];
-            id[idx] = ++val;
+            int idx = id.Length -1;
+            var val = id[idx];
+
+            if(val.GetType() == typeof(int))
+            {
+                int iVal = (int)val;
+                id[idx] = ++iVal;
+            }else if(val.GetType() == typeof(long))
+            {
+                long lVal = (long)val;
+                id[idx] = ++lVal;
+            }
+
             return id;
         }
 
         private object[] DecrementKey(object[] id)
         {
-            long idx = id.Length - 1;
-            long val = (long)id[idx];
-            id[idx] = --val;
+            int idx = id.Length - 1;
+            var val = id[idx];
+
+            if (val.GetType() == typeof(int))
+            {
+                int iVal = (int)val;
+                id[idx] = --iVal;
+            }
+            else if (val.GetType() == typeof(long))
+            {
+                long lVal = (long)val;
+                id[idx] = --lVal;
+            }
             return id;
         }
 

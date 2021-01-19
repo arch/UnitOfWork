@@ -98,5 +98,21 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+
+        /// <summary>
+        /// Registers the custom repository as a service in the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="TRepository">The type of the custom repositry.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <returns>The same service collection so that multiple calls can be chained.</returns>
+        public static IServiceCollection AddCustomRepository<TEntity, TRepository>(this IServiceCollection services)
+            where TEntity : class
+            where TRepository : class, IRepository<TEntity>
+        {
+            services.AddScoped<IRepository<TEntity>, TRepository>();
+
+            return services;
+        }
     }
 }

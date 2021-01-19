@@ -23,7 +23,7 @@ namespace Host.Controllers
             _logger = logger;
 
             // seeding
-            var repo = _unitOfWork.GetRepository<Blog>();
+            var repo = _unitOfWork.GetRepository<Blog>(hasCustomRepository: true);
             if (repo.Count() == 0)
             {
                 repo.Insert(new Blog
