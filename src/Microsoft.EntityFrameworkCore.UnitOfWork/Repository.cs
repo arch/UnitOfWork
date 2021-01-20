@@ -943,16 +943,36 @@ namespace Microsoft.EntityFrameworkCore
         private object[] IncrementKey(object[] id)
         {
             int idx = id.Length -1;
-            int val = (int)id[idx];
-            id[idx] = ++val;
+            var val = id[idx];
+
+            if(val.GetType() == typeof(int))
+            {
+                int iVal = (int)val;
+                id[idx] = ++iVal;
+            }else if(val.GetType() == typeof(long))
+            {
+                long lVal = (long)val;
+                id[idx] = ++lVal;
+            }
+
             return id;
         }
 
         private object[] DecrementKey(object[] id)
         {
             int idx = id.Length - 1;
-            int val = (int)id[idx];
-            id[idx] = --val;
+            var val = id[idx];
+
+            if (val.GetType() == typeof(int))
+            {
+                int iVal = (int)val;
+                id[idx] = --iVal;
+            }
+            else if (val.GetType() == typeof(long))
+            {
+                long lVal = (long)val;
+                id[idx] = --lVal;
+            }
             return id;
         }
 
