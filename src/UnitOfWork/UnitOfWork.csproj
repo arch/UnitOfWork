@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.</Description>
+    <VersionPrefix>3.1.0</VersionPrefix>
+    <Authors>rigofunc;rigofunc@outlook.com;</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Microsoft.EntityFrameworkCore.UnitOfWork</AssemblyName>
+    <PackageId>Microsoft.EntityFrameworkCore.UnitOfWork</PackageId>
+    <PackageTags>Entity Framework Core;entity-framework-core;EF;Data;O/RM;unitofwork;Unit Of Work;unit-of-work</PackageTags>
+    <PackageProjectUrl>https://github.com/arch/UnitOfWork</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/arch/UnitOfWork.git</RepositoryUrl>
+    <Version>3.1.16</Version>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
+  </ItemGroup>
+</Project>
