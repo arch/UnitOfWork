@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
+using Arch.EntityFrameworkCore.UnitOfWork.Host.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Host.Models
 {

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
@@ -283,5 +284,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             _context.ChangeTracker.TrackGraph(rootEntity, callback);
         }
+
+        IDbContextTransaction IUnitOfWork.BeginTransaction(System.Data.IsolationLevel isolation)
+        {
+            return _context.Database.BeginTransaction(isolation);
+        }
+
     }
 }

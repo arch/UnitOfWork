@@ -523,7 +523,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public virtual Task<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -531,7 +531,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
-        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
+        public virtual ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
 
         /// <summary>
         /// Gets the count based on a predicate.
@@ -773,7 +773,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
         public virtual ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
-        public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        //public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return _dbSet.AddAsync(entity, cancellationToken);
 
@@ -1620,7 +1620,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         #endregion
 
     */
-        public virtual void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -1687,5 +1686,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             _dbContext.Entry(entity).State = state;
         }
+
+        ValueTask<TEntity> IRepository<TEntity>.FindAsync(params object[] keyValues) => _dbSet.FindAsync(keyValues);
+        ValueTask<TEntity> IRepository<TEntity>.FindAsync(object[] keyValues, CancellationToken cancellationToken) => _dbSet.FindAsync(keyValues, cancellationToken);
     }
 }

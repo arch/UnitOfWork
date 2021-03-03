@@ -7,9 +7,11 @@
 namespace Arch.EntityFrameworkCore.UnitOfWork
 {
     using System;
+    using System.Data;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.EntityFrameworkCore.Storage;
 
     /// <summary>
     /// Defines the interface(s) for unit of work.
