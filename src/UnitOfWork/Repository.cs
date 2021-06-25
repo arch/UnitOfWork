@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
@@ -875,18 +876,118 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public virtual void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
 
         /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
+        public async Task<IList<TEntity>> GetAllAsync()
+        {
+            return  await _dbSet.ToListAsync();
+        }
+        /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
+        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
+        public async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, 
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, 
+            bool disableTracking = true, bool ignoreQueryFilters = false)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
+        }
+		
+		private bool ExistsUpdateTimestamp(TEntity entity, out TEntity entityForUpdate)
+        {
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            object[] objArr = key.Properties.Select(q => entity.GetType().GetProperty(q.Name).GetValue(entity, null)).ToArray();
+            TEntity obj = _dbSet.Find(objArr);
+            if (obj != null && obj.GetType().GetProperty("Timestamp") != null)
+            {
+                entity.GetType().GetProperty("Timestamp").SetValue(entity, obj.GetType().GetProperty("Timestamp").GetValue(obj, null));
+                _dbContext.Entry(obj).State = EntityState.Detached;
+            }
+            entityForUpdate = entity;
+
+            return obj != null;
+           
+        }
+        public virtual bool Exists(TEntity entity)
+        {
+            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity).ToString());
+            IKey key = entityType.FindPrimaryKey();
+            object[] objArr = key.Properties.Select(q => entity.GetType().GetProperty(q.Name).GetValue(entity, null)).ToArray();
+            TEntity obj = _dbSet.Find(objArr);
+            if (obj != null) _dbContext.Entry(obj).State = EntityState.Detached;
+            return obj != null; 
+        }
+
+        public virtual void InsertOrUpdate(TEntity entity)
+        {
+            TEntity entityForUpdate = null;
+            if (ExistsUpdateTimestamp(entity, out entityForUpdate)) {
+            //if (Exists(entity)) {
+                Update(entityForUpdate);
+            } else {
+                Insert(entity);
+            }
+        }
+
+        public virtual void InsertOrUpdate(IEnumerable<TEntity> entities)
+        {
+            //foreach (TEntity entity in entities) InsertOrUpdate(entity);
+            _dbContext.BulkInsertOrUpdate<TEntity>(entities.ToList());
+        }
+
+        /// <summary>
         /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         public virtual List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                 Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                bool disableTracking = true)
+                                                bool disableTracking = true,
+                                                bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet;
             if (disableTracking)
@@ -902,6 +1003,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -921,6 +1027,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
         /// </param>
@@ -930,6 +1037,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                            bool disableTracking = true,
+                                                           bool ignoreQueryFilters = false,
                                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             IQueryable<TEntity> query = _dbSet;
@@ -946,6 +1054,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
             }
 
             if (orderBy != null)
@@ -1620,62 +1733,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         #endregion
 
     */
-
-        /// <summary>
-        /// Gets all entities. This method is not recommended
-        /// </summary>
-        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        public async Task<IList<TEntity>> GetAllAsync()
-        {
-            return  await _dbSet.ToListAsync();
-        }
-
-        /// <summary>
-        /// Gets all entities. This method is not recommended
-        /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <param name="ignoreQueryFilters">Ignore query filters</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
-        public async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, 
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, 
-            bool disableTracking = true, bool ignoreQueryFilters = false)
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            if (disableTracking)
-            {
-                query = query.AsNoTracking();
-            }
-
-            if (include != null)
-            {
-                query = include(query);
-            }
-
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            if (ignoreQueryFilters)
-            {
-                query = query.IgnoreQueryFilters();
-            }
-
-            if (orderBy != null)
-            {
-                return await orderBy(query).ToListAsync();
-            }
-            else
-            {
-                return await query.ToListAsync();
-            }
-        }
 
         /// <summary>
         /// Change entity state for patch method on web api.

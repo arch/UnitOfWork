@@ -431,6 +431,25 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         void Update(IEnumerable<TEntity> entities);
 
         /// <summary>
+        /// Check Given Entity is exists
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        bool Exists(TEntity entity);
+
+        /// <summary>
+        /// Inserts or Updates the specified entities.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        void InsertOrUpdate(TEntity entity);
+
+        /// <summary>
+        /// Inserts or Updates the specified entities.
+        /// </summary>
+        /// <param name="entities">The entities.</param>
+        void InsertOrUpdate(IEnumerable<TEntity> entities);
+       
+
+        /// <summary>
         /// Deletes the entity by the specified primary key.
         /// </summary>
         /// <param name="id">The primary key value.</param>
@@ -462,6 +481,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
         /// </param>
@@ -471,6 +491,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                     Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                     bool disableTracking = true,
+                                                    bool ignoreQueryFilters = false,
                                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -480,12 +501,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="orderBy">A function to order elements.</param>
         /// <param name="include">A function to include navigation properties</param>
         /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="List{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
         List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true);
+                                                  bool disableTracking = true,
+                                                  bool ignoreQueryFilters = false);
 
 
         /// <summary>
