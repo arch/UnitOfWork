@@ -137,10 +137,13 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             // this will query your database and return the result to your datatable
             DataTable dataTable = new DataTable();
+            DataSet ds = new DataSet();
+            da.Fill(ds);
             da.Fill(dataTable);
             da.Dispose();
             conn.Close();
-            return dataTable;
+            //return dataTable;
+            return ds.Tables[0];
         }
 
 
