@@ -142,8 +142,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             da.Fill(dataTable);
             da.Dispose();
             conn.Close();
-            //return dataTable;
-            return ds.Tables[0];
+            return dataTable;
         }
 
 
