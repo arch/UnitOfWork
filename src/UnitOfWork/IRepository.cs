@@ -53,6 +53,40 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                          bool ignoreQueryFilters = false);
 
         /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <param name="selector">The selector for projection.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
+        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
+        IQueryable<TResult> GetAll<TResult>(Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, bool disableTracking = true, bool ignoreQueryFilters = false);
+
+        /// <summary>
+        /// Gets all entities. This method is not recommended
+        /// </summary>
+        /// <param name="selector">The selector for projection.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="orderBy">A function to order elements.</param>
+        /// <param name="include">A function to include navigation properties</param>
+        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
+        /// <param name="ignoreQueryFilters">Ignore query filters</param>
+        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
+        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
+        Task<IList<TResult>> GetAllAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
+
+        /// <summary>
         /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -306,93 +340,105 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Gets the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        int Count(Expression<Func<TEntity, bool>> predicate = null);
+        int Count(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets async the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the long count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        long LongCount(Expression<Func<TEntity, bool>> predicate = null);
+        long LongCount(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets async the long count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns></returns>
-        Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null);
+        Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the max based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the async max based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the min based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the async min based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the average based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        decimal Average (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        decimal Average (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
-            /// Gets the async average based on a predicate.
-            /// </summary>
-            /// <param name="predicate"></param>
-            ///  /// <param name="selector"></param>
-            /// <returns>decimal</returns>
-        Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        /// Gets the async average based on a predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
+        /// <returns>decimal</returns>
+        Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the sum based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        decimal Sum (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        decimal Sum (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the async sum based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         ///  /// <param name="selector"></param>
+        /// <param name="ignoreQueryFilters"></param>
         /// <returns>decimal</returns>
-        Task<decimal> SumAsync (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        Task<decimal> SumAsync (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null, bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the Exists record based on a predicate.

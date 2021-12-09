@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.</Description>
-    <VersionPrefix>3.1.0</VersionPrefix>
+    <VersionPrefix>5.0.7</VersionPrefix>
     <Authors>rigofunc;rigofunc@outlook.com;qermezkon@gmail.com</Authors>
     <TargetFramework>netstandard2.1</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -14,16 +14,16 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AikiCo/UnitOfWork</RepositoryUrl>
-    <Version>5.0.0</Version>
+    <Version>5.0.7</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>8</LangVersion>
-    <PackageVersion>5.0.0</PackageVersion>
+    <PackageVersion>5.0.7</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <UserSecretsId>cba3a20d-f192-445e-9058-fdbacec3fea3</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.AutoHistory" Version="5.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.7" />
   </ItemGroup>
 </Project>
