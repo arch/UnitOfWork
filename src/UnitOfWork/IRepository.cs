@@ -281,24 +281,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets all entities. This method is not recommended
         /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <param name="ignoreQueryFilters">Ignore query filters</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
-        IQueryable<TResult> GetAll<TResult>(Expression<Func<TEntity,TResult>> selector,
-            Expression<Func<TEntity, bool>> predicate = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-            bool disableTracking = true,
-            bool ignoreQueryFilters = false);
-
-        /// <summary>
-        /// Gets all entities. This method is not recommended
-        /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
         Task<IList<TEntity>> GetAllAsync();
 
@@ -317,24 +299,6 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
                                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                                   bool disableTracking = true,
                                                   bool ignoreQueryFilters = false);
-
-        /// <summary>
-        /// Gets all entities. This method is not recommended
-        /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <param name="ignoreQueryFilters">Ignore query filters</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
-        Task<IList<TResult>> GetAllAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
-            Expression<Func<TEntity, bool>> predicate = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-            bool disableTracking = true,
-            bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets the count based on a predicate.
