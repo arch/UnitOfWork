@@ -13,7 +13,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
     public class ValuesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private ILogger<ValuesController> _logger;
+        private readonly ILogger<ValuesController> _logger;
 
         // 1. IRepositoryFactory used for readonly scenario;
         // 2. IUnitOfWork used for read/write scenario;
@@ -27,135 +27,137 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
             var repo = _unitOfWork.GetRepository<Blog>(hasCustomRepository: true);
             if (repo.Count() == 0)
             {
-                repo.Insert(new Blog
-                {
-                    Id = 1,
-                    Url = "/a/" + 1,
-                    Title = $"a{1}",
-                    Posts = new List<Post>{
-                                new Post
-                                {
-                                    Id = 1,
-                                    Title = "A",
-                                    Content = "A's content",
-                                    Comments = new List<Comment>
-                                    {
-                                        new Comment
-                                        {
-                                            Id = 1,
-                                            Title = "A",
-                                            Content = "A's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 2,
-                                            Title = "b",
-                                            Content = "b's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 3,
-                                            Title = "c",
-                                            Content = "c's content",
-                                        }
-                                    },
-                                },
-                                new Post
-                                {
-                                    Id = 2,
-                                    Title = "B",
-                                    Content = "B's content",
-                                    Comments = new List<Comment>
-                                    {
-                                        new Comment
-                                        {
-                                            Id = 4,
-                                            Title = "A",
-                                            Content = "A's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 5,
-                                            Title = "b",
-                                            Content = "b's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 6,
-                                            Title = "c",
-                                            Content = "c's content",
-                                        }
-                                    },
-                                },
-                                new Post
-                                {
-                                    Id = 3,
-                                    Title = "C",
-                                    Content = "C's content",
-                                    Comments = new List<Comment>
-                                    {
-                                        new Comment
-                                        {
-                                            Id = 7,
-                                            Title = "A",
-                                            Content = "A's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 8,
-                                            Title = "b",
-                                            Content = "b's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 9,
-                                            Title = "c",
-                                            Content = "c's content",
-                                        }
-                                    },
-                                },
-                                new Post
-                                {
-                                    Id = 4,
-                                    Title = "D",
-                                    Content = "D's content",
-                                    Comments = new List<Comment>
-                                    {
-                                        new Comment
-                                        {
-                                            Id = 10,
-                                            Title = "A",
-                                            Content = "A's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 11,
-                                            Title = "b",
-                                            Content = "b's content",
-                                        },
-                                        new Comment
-                                        {
-                                            Id = 12,
-                                            Title = "c",
-                                            Content = "c's content",
-                                        }
-                                    },
-                                }
-                            },
-                });
+                SeedInitialEntities(repo);
                 _unitOfWork.SaveChanges();
             }
         }
 
+        private static void SeedInitialEntities(IRepository<Blog> repo) 
+            => repo.Insert(new Blog
+            {
+                Id = 1,
+                Url = "/a/" + 1,
+                Title = $"a{1}",
+                Posts = new List<Post>{
+                    new Post
+                    {
+                        Id = 1,
+                        Title = "A",
+                        Content = "A's content",
+                        Comments = new List<Comment>
+                        {
+                            new Comment
+                            {
+                                Id = 1,
+                                Title = "A",
+                                Content = "A's content",
+                            },
+                            new Comment
+                            {
+                                Id = 2,
+                                Title = "b",
+                                Content = "b's content",
+                            },
+                            new Comment
+                            {
+                                Id = 3,
+                                Title = "c",
+                                Content = "c's content",
+                            }
+                        },
+                    },
+                    new Post
+                    {
+                        Id = 2,
+                        Title = "B",
+                        Content = "B's content",
+                        Comments = new List<Comment>
+                        {
+                            new Comment
+                            {
+                                Id = 4,
+                                Title = "A",
+                                Content = "A's content",
+                            },
+                            new Comment
+                            {
+                                Id = 5,
+                                Title = "b",
+                                Content = "b's content",
+                            },
+                            new Comment
+                            {
+                                Id = 6,
+                                Title = "c",
+                                Content = "c's content",
+                            }
+                        },
+                    },
+                    new Post
+                    {
+                        Id = 3,
+                        Title = "C",
+                        Content = "C's content",
+                        Comments = new List<Comment>
+                        {
+                            new Comment
+                            {
+                                Id = 7,
+                                Title = "A",
+                                Content = "A's content",
+                            },
+                            new Comment
+                            {
+                                Id = 8,
+                                Title = "b",
+                                Content = "b's content",
+                            },
+                            new Comment
+                            {
+                                Id = 9,
+                                Title = "c",
+                                Content = "c's content",
+                            }
+                        },
+                    },
+                    new Post
+                    {
+                        Id = 4,
+                        Title = "D",
+                        Content = "D's content",
+                        Comments = new List<Comment>
+                        {
+                            new Comment
+                            {
+                                Id = 10,
+                                Title = "A",
+                                Content = "A's content",
+                            },
+                            new Comment
+                            {
+                                Id = 11,
+                                Title = "b",
+                                Content = "b's content",
+                            },
+                            new Comment
+                            {
+                                Id = 12,
+                                Title = "c",
+                                Content = "c's content",
+                            }
+                        },
+                    }
+                },
+            });
+
         // GET api/values
         [HttpGet]
-        public async Task<IList<Blog>> Get()
-        {
-            return await _unitOfWork.GetRepository<Blog>().GetAllAsync(include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
-        }
+        public async Task<IList<Blog>> Get() 
+            => await _unitOfWork.GetRepository<Blog>()
+                .GetAllAsync(include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
 
         // GET api/values/Page/5/10
-        [HttpGet("Page/{pageIndex}/{pageSize}")]
+        [HttpGet("Page/{pageIndex:int}/{pageSize:int}")]
         public async Task<IPagedList<Blog>> Get(int pageIndex, int pageSize)
         {
             // projection
@@ -170,11 +172,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
         {
             _logger.LogInformation("demo about first or default with include");
 
-            var item = _unitOfWork.GetRepository<Blog>().GetFirstOrDefault(predicate: x => x.Title.Contains(term), include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
+            var item = await _unitOfWork.GetRepository<Blog>().GetFirstOrDefaultAsync(predicate: x => x.Title.Contains(term), include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
 
             _logger.LogInformation("demo about first or default without include");
 
-            item = _unitOfWork.GetRepository<Blog>().GetFirstOrDefault(predicate: x => x.Title.Contains(term), orderBy: source => source.OrderByDescending(b => b.Id));
+            item = await _unitOfWork.GetRepository<Blog>().GetFirstOrDefaultAsync(predicate: x => x.Title.Contains(term), orderBy: source => source.OrderByDescending(b => b.Id));
 
             _logger.LogInformation("demo about first or default with projection");
 
@@ -184,11 +186,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
         }
 
         // GET api/values/4
-        [HttpGet("{id}")]
-        public async Task<Blog> Get(int id)
-        {
-            return await _unitOfWork.GetRepository<Blog>().FindAsync(id);
-        }
+        [HttpGet("{id:int}")]
+        public async Task<Blog> Get(int id) 
+            => await _unitOfWork.GetRepository<Blog>().FindAsync(id);
 
         // POST api/values
         [HttpPost]

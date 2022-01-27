@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork.Tests.Entities
 {
-    public class City
+    public record City
     {
         public int Id { get; set; }
         public string Name { get; set; }

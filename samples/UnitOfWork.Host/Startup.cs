@@ -33,8 +33,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host
         {
             // use in memory for testing.
             services
-                .AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=uow;uid=root;pwd=root1234;"))
-                //.AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
+                //.AddDbContext<BloggingContext>(opt => opt.UseMySql("Server=localhost;database=uow;uid=root;pwd=root1234;"))
+                .AddDbContext<BloggingContext>(opt => opt.UseInMemoryDatabase("UnitOfWork"))
                 .AddUnitOfWork<BloggingContext>()
                 .AddCustomRepository<Blog, CustomBlogRepository>();
 

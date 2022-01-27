@@ -5,12 +5,9 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Tests
 {
     public class InMemoryContext : DbContext
     {
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Country> Countries => Set<Country>();
+        public DbSet<Customer> Customers => Set<Customer>();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseInMemoryDatabase("test");
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase("test");
     }
 }
