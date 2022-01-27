@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    
+    <RootNamespace>Arch.EntityFrameworkCore.UnitOfWork.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
