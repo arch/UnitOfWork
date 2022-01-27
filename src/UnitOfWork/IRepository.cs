@@ -33,7 +33,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         void ChangeTable(string table);
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -44,16 +44,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null,
-                                         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                         int pageIndex = 0,
-                                         int pageSize = 20,
-                                         bool disableTracking = true,
-                                         bool ignoreQueryFilters = false);
+        IPagedList<TEntity> GetPagedList(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            int pageIndex = 0,
+            int pageSize = 20,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -67,17 +68,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null,
-                                                    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                    Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                    int pageIndex = 0,
-                                                    int pageSize = 20,
-                                                    bool disableTracking = true,
-                                                    CancellationToken cancellationToken = default(CancellationToken),
-                                                    bool ignoreQueryFilters = false);
+        Task<IPagedList<TEntity>> GetPagedListAsync(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            int pageIndex = 0,
+            int pageSize = 20,
+            bool disableTracking = true,
+            CancellationToken cancellationToken = default,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TResult}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TResult}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -89,17 +91,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        IPagedList<TResult> GetPagedList<TResult>(Expression<Func<TEntity, TResult>> selector,
-                                                  Expression<Func<TEntity, bool>> predicate = null,
-                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  int pageIndex = 0,
-                                                  int pageSize = 20,
-                                                  bool disableTracking = true,
-                                                  bool ignoreQueryFilters = false) where TResult : class;
+        IPagedList<TResult> GetPagedList<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            int pageIndex = 0,
+            int pageSize = 20,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false) where TResult : class;
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -114,18 +117,19 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        Task<IPagedList<TResult>> GetPagedListAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
-                                                             Expression<Func<TEntity, bool>> predicate = null,
-                                                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                             int pageIndex = 0,
-                                                             int pageSize = 20,
-                                                             bool disableTracking = true,
-                                                             CancellationToken cancellationToken = default(CancellationToken),
-                                                             bool ignoreQueryFilters = false) where TResult : class;
+        Task<IPagedList<TResult>> GetPagedListAsync<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            int pageIndex = 0,
+            int pageSize = 20,
+            bool disableTracking = true,
+            CancellationToken cancellationToken = default,
+            bool ignoreQueryFilters = false) where TResult : class;
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method defaults to a read-only, no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -134,14 +138,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method defaults to a read-only, no-tracking query.</remarks>
-        TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate = null,
-                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                  bool disableTracking = true,
-                                  bool ignoreQueryFilters = false);
+        TEntity GetFirstOrDefault(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method defaults to a read-only, no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -151,15 +156,16 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method defaults to a read-only, no-tracking query.</remarks>
-        TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
-                                           Expression<Func<TEntity, bool>> predicate = null,
-                                           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                           Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                           bool disableTracking = true,
-                                           bool ignoreQueryFilters = false);
+        TResult GetFirstOrDefault<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method defaults to a read-only, no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -177,7 +183,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             bool ignoreQueryFilters = false);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method defaults to a read-only, no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -238,11 +244,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
-        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
-                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true,
-                                                  bool ignoreQueryFilters = false);
+        IQueryable<TEntity> GetAll(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -278,11 +285,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
-        Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null,
-                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true,
-                                                  bool ignoreQueryFilters = false);
+        Task<IList<TEntity>> GetAllAsync(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -431,7 +439,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entity">The entity to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+        ValueTask<EntityEntry<TEntity>> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
@@ -446,7 +454,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="entities">The entities to insert.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
-        Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates the specified entity.
@@ -511,7 +519,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
 
         /// <summary>
-        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate. This method default no-tracking query.
+        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderBy delegate. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -523,15 +531,16 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </param>
         /// <returns>An <see cref="List{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
-                                                    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                    Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                    bool disableTracking = true,
-                                                    bool ignoreQueryFilters = false,
-                                                    CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TEntity>> GetListAsync(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the <see cref="List{TResult}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="List{TResult}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -540,11 +549,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="ignoreQueryFilters">Ignore query filters</param>
         /// <returns>An <see cref="List{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
         /// <remarks>This method default no-tracking query.</remarks>
-        List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
-                                                  Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                                  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                                                  bool disableTracking = true,
-                                                  bool ignoreQueryFilters = false);
+        List<TEntity> GetList(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true,
+            bool ignoreQueryFilters = false);
 
 
         /// <summary>

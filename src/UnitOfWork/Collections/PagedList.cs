@@ -70,15 +70,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
                 throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
             }
 
-            if (source is IQueryable<T> querable)
+            if (source is IQueryable<T> queryable)
             {
                 PageIndex = pageIndex;
                 PageSize = pageSize;
                 IndexFrom = indexFrom;
-                TotalCount = querable.Count();
+                TotalCount = queryable.Count();
                 TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-                Items = querable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
+                Items = queryable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToList();
             }
             else
             {
@@ -95,7 +95,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
         /// <summary>
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
         /// </summary>
-        internal PagedList() => Items = new T[0];
+        internal PagedList() => Items = Array.Empty<T>();
     }
 
 
@@ -165,15 +165,15 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
                 throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
             }
 
-            if (source is IQueryable<TSource> querable)
+            if (source is IQueryable<TSource> queryable)
             {
                 PageIndex = pageIndex;
                 PageSize = pageSize;
                 IndexFrom = indexFrom;
-                TotalCount = querable.Count();
+                TotalCount = queryable.Count();
                 TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-                var items = querable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
+                var items = queryable.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
 
                 Items = new List<TResult>(converter(items));
             }

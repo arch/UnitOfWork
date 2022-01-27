@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
 {
-    public static class IQueryablePageListExtensions
+    public static class QueryablePageListExtensions
     {
         /// <summary>
         /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="pageIndex"/> and <paramref name="pageSize"/>.
@@ -20,7 +20,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
         /// </param>
         /// <param name="indexFrom">The start index value.</param>
         /// <returns>An instance of the inherited from <see cref="IPagedList{T}"/> interface.</returns>
-        public static async Task<IPagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int pageIndex, int pageSize, int indexFrom = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<IPagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int pageIndex, int pageSize, int indexFrom = 0, CancellationToken cancellationToken = default)
         {
             if (indexFrom > pageIndex)
             {
@@ -28,8 +28,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
             }
 
             var count = await source.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await source.Skip((pageIndex - indexFrom) * pageSize)
-                                    .Take(pageSize).ToListAsync(cancellationToken).ConfigureAwait(false);
+            var items = await source
+                .Skip((pageIndex - indexFrom) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
             var pagedList = new PagedList<T>()
             {

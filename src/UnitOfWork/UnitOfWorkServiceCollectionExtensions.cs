@@ -22,7 +22,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         public static IServiceCollection AddUnitOfWork<TContext>(this IServiceCollection services) where TContext : DbContext
         {
             services.AddScoped<IRepositoryFactory, UnitOfWork<TContext>>();
-            // Following has a issue: IUnitOfWork cannot support multiple dbcontext/database, 
+            // Following has a issue: IUnitOfWork cannot support multiple DbContext/Database, 
             // that means cannot call AddUnitOfWork<TContext> multiple times.
             // Solution: check IUnitOfWork whether or null
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
@@ -104,7 +104,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Registers the custom repository as a service in the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <typeparam name="TRepository">The type of the custom repositry.</typeparam>
+        /// <typeparam name="TRepository">The type of the custom repository.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
         /// <returns>The same service collection so that multiple calls can be chained.</returns>
         public static IServiceCollection AddCustomRepository<TEntity, TRepository>(this IServiceCollection services)

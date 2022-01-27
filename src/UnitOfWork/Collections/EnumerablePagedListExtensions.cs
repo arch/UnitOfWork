@@ -8,7 +8,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Collections
     /// <summary>
     /// Provides some extension methods for <see cref="IEnumerable{T}"/> to provide paging capability.
     /// </summary>
-    public static class IEnumerablePagedListExtensions
+    public static class EnumerablePagedListExtensions
     {
         /// <summary>
         /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="pageIndex"/> and <paramref name="pageSize"/>.

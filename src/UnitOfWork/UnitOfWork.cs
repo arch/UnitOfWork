@@ -22,24 +22,20 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     /// <typeparam name="TContext">The type of the db context.</typeparam>
     public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
     {
-        private readonly TContext _context;
-        private bool disposed = false;
-        private Dictionary<Type, object> repositories;
+        private bool _disposed;
+        private Dictionary<Type, object> _repositories;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public UnitOfWork(TContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        public UnitOfWork(TContext context) => DbContext = context ?? throw new ArgumentNullException(nameof(context));
 
         /// <summary>
         /// Gets the db context.
         /// </summary>
         /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
-        public TContext DbContext => _context;
+        public TContext DbContext { get; }
 
         /// <summary>
         /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
@@ -50,7 +46,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </remarks>
         public void ChangeDatabase(string database)
         {
-            var connection = _context.Database.GetDbConnection();
+            var connection = DbContext.Database.GetDbConnection();
             if (connection.State.HasFlag(ConnectionState.Open))
             {
                 connection.ChangeDatabase(database);
@@ -62,7 +58,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             }
 
             // Following code only working for mysql.
-            var items = _context.Model.GetEntityTypes();
+            var items = DbContext.Model.GetEntityTypes();
             foreach (var item in items)
             {
                 if (item is IConventionEntityType entityType)
@@ -75,20 +71,20 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets the specified repository for the <typeparamref name="TEntity"/>.
         /// </summary>
-        /// <param name="hasCustomRepository"><c>True</c> if providing custom repositry</param>
+        /// <param name="hasCustomRepository"><c>True</c> if providing custom repository</param>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
         public IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
         {
-            if (repositories == null)
+            if (_repositories == null)
             {
-                repositories = new Dictionary<Type, object>();
+                _repositories = new Dictionary<Type, object>();
             }
 
-            // what's the best way to support custom reposity?
+            // what's the best way to support custom repository?
             if (hasCustomRepository)
             {
-                var customRepo = _context.GetService<IRepository<TEntity>>();
+                var customRepo = DbContext.GetService<IRepository<TEntity>>();
                 if (customRepo != null)
                 {
                     return customRepo;
@@ -96,12 +92,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             }
 
             var type = typeof(TEntity);
-            if (!repositories.ContainsKey(type))
+            if (!_repositories.ContainsKey(type))
             {
-                repositories[type] = new Repository<TEntity>(_context);
+                _repositories[type] = new Repository<TEntity>(DbContext);
             }
 
-            return (IRepository<TEntity>)repositories[type];
+            return (IRepository<TEntity>)_repositories[type];
         }
 
         /// <summary>
@@ -110,7 +106,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The number of state entities written to database.</returns>
-        public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlRaw(sql, parameters);
+        public int ExecuteSqlCommand(string sql, params object[] parameters) => DbContext.Database.ExecuteSqlRaw(sql, parameters);
 
         /// <summary>
         /// Executes the specified raw SQL command.
@@ -120,7 +116,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>The DataTable.</returns>
         public DataTable ExecuteDtSqlCommand(string sql, params object[] parameters)
         {
-           SqlConnection conn = (SqlConnection) _context.Database.GetDbConnection();
+           SqlConnection conn = (SqlConnection) DbContext.Database.GetDbConnection();
            SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.CommandTimeout = 0;
 
@@ -153,17 +149,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{T}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => _context.Set<TEntity>().FromSqlRaw(sql, parameters);
+        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => DbContext.Set<TEntity>().FromSqlRaw(sql, parameters);
 
         /// <summary>
         /// Starts Databaselevel Transaction
         /// </summary>
         /// <param name="isolation">The IsolationLevel</param>
         /// <returns>Transaction Context</returns>
-        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel isolation = System.Data.IsolationLevel.ReadCommitted)
-        {
-            return _context.Database.BeginTransaction(isolation);
-        }
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel isolation = System.Data.IsolationLevel.ReadCommitted) => DbContext.Database.BeginTransaction(isolation);
 
         /// <summary>
         /// Saves all changes made in this context to the database.
@@ -174,10 +167,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             if (ensureAutoHistory)
             {
-                _context.EnsureAutoHistory();
+                DbContext.EnsureAutoHistory();
             }
 
-            return _context.SaveChanges();
+            return DbContext.SaveChanges();
         }
 
         /// <summary>
@@ -189,10 +182,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             if (ensureAutoHistory)
             {
-                _context.EnsureAutoHistory();
+                DbContext.EnsureAutoHistory();
             }
 
-            return await _context.SaveChangesAsync();
+            return await DbContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -259,33 +252,23 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="disposing">The disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     // clear repositories
-                    if (repositories != null)
-                    {
-                        repositories.Clear();
-                    }
+                    _repositories?.Clear();
 
                     // dispose the db context.
-                    _context.Dispose();
+                    DbContext.Dispose();
                 }
             }
 
-            disposed = true;
+            _disposed = true;
         }
 
-        public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback)
-        {
-            _context.ChangeTracker.TrackGraph(rootEntity, callback);
-        }
+        public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback) => DbContext.ChangeTracker.TrackGraph(rootEntity, callback);
 
-        IDbContextTransaction IUnitOfWork.BeginTransaction(System.Data.IsolationLevel isolation)
-        {
-            return _context.Database.BeginTransaction(isolation);
-        }
-
+        IDbContextTransaction IUnitOfWork.BeginTransaction(System.Data.IsolationLevel isolation) => DbContext.Database.BeginTransaction(isolation);
     }
 }
