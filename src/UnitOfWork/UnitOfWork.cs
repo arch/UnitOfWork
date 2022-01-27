@@ -203,20 +203,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
-            using (var ts = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using var ts = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            var count = 0;
+            foreach (var unitOfWork in unitOfWorks)
             {
-                var count = 0;
-                foreach (var unitOfWork in unitOfWorks)
-                {
-                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory).ConfigureAwait(false);
-                }
-
-                count += await SaveChangesAsync(ensureAutoHistory);
-
-                ts.Complete();
-
-                return count;
+                count += await unitOfWork.SaveChangesAsync(ensureAutoHistory).ConfigureAwait(false);
             }
+
+            count += await SaveChangesAsync(ensureAutoHistory);
+
+            ts.Complete();
+
+            return count;
         }
 
 
@@ -229,21 +227,18 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
         public async Task<int> SaveChangesAsync(Transaction transaction, bool ensureAutoHistory = false,  params IUnitOfWork[] unitOfWorks)
         {
-            
-             using (var ts = new TransactionScope(transaction))
+            using var ts = new TransactionScope(transaction);
+            var count = 0;
+            foreach (var unitOfWork in unitOfWorks)
             {
-                var count = 0;
-                foreach (var unitOfWork in unitOfWorks)
-                {
-                    count += await unitOfWork.SaveChangesAsync(ensureAutoHistory);
-                }
-
-                count += await SaveChangesAsync(ensureAutoHistory);
-
-                ts.Complete();
-
-                return count;
+                count += await unitOfWork.SaveChangesAsync(ensureAutoHistory);
             }
+
+            count += await SaveChangesAsync(ensureAutoHistory);
+
+            ts.Complete();
+
+            return count;
         }
 
 

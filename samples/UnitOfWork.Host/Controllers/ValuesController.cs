@@ -170,11 +170,11 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Controllers
         {
             _logger.LogInformation("demo about first or default with include");
 
-            var item = _unitOfWork.GetRepository<Blog>().GetFirstOrDefault(predicate: x => x.Title.Contains(term), include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
+            var item = await _unitOfWork.GetRepository<Blog>().GetFirstOrDefaultAsync(predicate: x => x.Title.Contains(term), include: source => source.Include(blog => blog.Posts).ThenInclude(post => post.Comments));
 
             _logger.LogInformation("demo about first or default without include");
 
-            item = _unitOfWork.GetRepository<Blog>().GetFirstOrDefault(predicate: x => x.Title.Contains(term), orderBy: source => source.OrderByDescending(b => b.Id));
+            item = await _unitOfWork.GetRepository<Blog>().GetFirstOrDefaultAsync(predicate: x => x.Title.Contains(term), orderBy: source => source.OrderByDescending(b => b.Id));
 
             _logger.LogInformation("demo about first or default with projection");
 
