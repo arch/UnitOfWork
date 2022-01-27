@@ -341,66 +341,74 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <summary>
         /// Gets the max based on a predicate.
         /// </summary>
+        /// <param name="selector"></param>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// ///
         /// <returns>decimal</returns>
-        T Max<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        T Max<T>(Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the async max based on a predicate.
         /// </summary>
+        /// <param name="selector"></param>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// ///
         /// <returns>decimal</returns>
-        Task<T> MaxAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        Task<T> MaxAsync<T>(Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the min based on a predicate.
         /// </summary>
-        /// <param name="predicate"></param>
         /// <param name="selector"></param>
+        /// <param name="predicate"></param>
         /// <returns>decimal</returns>
-        T Min<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        T Min<T>(Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the async min based on a predicate.
         /// </summary>
-        /// <param name="predicate"></param>
         /// <param name="selector"></param>
+        /// <param name="predicate"></param>
         /// <returns>decimal</returns>
-        Task<T> MinAsync<T>(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, T>> selector = null);
+        Task<T> MinAsync<T>(Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the average based on a predicate.
         /// </summary>
+        /// <param name="selector"></param>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// ///
         /// <returns>decimal</returns>
-        decimal Average (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        decimal Average(Expression<Func<TEntity, decimal>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
-            /// Gets the async average based on a predicate.
-            /// </summary>
-            /// <param name="predicate"></param>
-            ///  /// <param name="selector"></param>
-            /// <returns>decimal</returns>
-        Task<decimal> AverageAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        /// Gets the async average based on a predicate.
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <param name="predicate"></param>
+        /// ///
+        /// <returns>decimal</returns>
+        Task<decimal> AverageAsync(Expression<Func<TEntity, decimal>> selector,
+            Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the sum based on a predicate.
         /// </summary>
+        /// <param name="selector"></param>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// ///
         /// <returns>decimal</returns>
-        decimal Sum (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        decimal Sum(Expression<Func<TEntity, decimal>> selector, Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the async sum based on a predicate.
         /// </summary>
+        /// <param name="selector"></param>
         /// <param name="predicate"></param>
-        ///  /// <param name="selector"></param>
+        /// ///
         /// <returns>decimal</returns>
-        Task<decimal> SumAsync (Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, decimal>> selector = null);
+        Task<decimal> SumAsync(Expression<Func<TEntity, decimal>> selector,
+            Expression<Func<TEntity, bool>> predicate = null);
 
         /// <summary>
         /// Gets the Exists record based on a predicate.
