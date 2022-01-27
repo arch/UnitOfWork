@@ -34,17 +34,14 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Tests
             Assert.Equal("C", page.Items[0].Name);
         }
 
-        public List<Customer> TestItems()
-        {
-            return new List<Customer>()
+        private static IEnumerable<Customer> TestItems() => new List<Customer>()
             {
-                new Customer(){Name="A", Age=1},
-                new Customer(){Name="B", Age=1},
-                new Customer(){Name="C", Age=2},
-                new Customer(){Name="D", Age=3},
-                new Customer(){Name="E", Age=4},
-                new Customer(){Name="F", Age=5},
+                new(){Name="A", Age=1},
+                new(){Name="B", Age=1},
+                new(){Name="C", Age=2},
+                new(){Name="D", Age=3},
+                new(){Name="E", Age=4},
+                new(){Name="F", Age=5},
             };
-        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Arch.EntityFrameworkCore.UnitOfWork.Tests.Entities
 {
-    public class Customer
+    public record Customer
     {
         public int Id { get; set; }
         public string Name { get; set; }

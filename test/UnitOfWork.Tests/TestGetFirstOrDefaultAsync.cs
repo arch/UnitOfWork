@@ -52,30 +52,30 @@ namespace Arch.EntityFrameworkCore.UnitOfWork.Tests
         }
 
 
-        protected static List<Country> TestCountries => new List<Country>
+        private static IEnumerable<Country> TestCountries => new List<Country>
         {
-            new Country {Id = 1, Name = "A"},
-            new Country {Id = 2, Name = "B"}
+            new() {Id = 1, Name = "A"},
+            new() {Id = 2, Name = "B"}
         };
 
-        public static List<City> TestCities => new List<City>
+        private static IEnumerable<City> TestCities => new List<City>
         {
-            new City { Id = 1, Name = "A", CountryId = 1},
-            new City { Id = 2, Name = "B", CountryId = 2},
-            new City { Id = 3, Name = "C", CountryId = 1},
-            new City { Id = 4, Name = "D", CountryId = 2},
-            new City { Id = 5, Name = "E", CountryId = 1},
-            new City { Id = 6, Name = "F", CountryId = 2},
+            new() { Id = 1, Name = "A", CountryId = 1},
+            new() { Id = 2, Name = "B", CountryId = 2},
+            new() { Id = 3, Name = "C", CountryId = 1},
+            new() { Id = 4, Name = "D", CountryId = 2},
+            new() { Id = 5, Name = "E", CountryId = 1},
+            new() { Id = 6, Name = "F", CountryId = 2},
         };
 
-        public static List<Town> TestTowns => new List<Town>
+        private static IEnumerable<Town> TestTowns => new List<Town>
         {
-            new Town { Id = 1, Name="TownA", CityId = 1 },
-            new Town { Id = 2, Name="TownB", CityId = 2 },
-            new Town { Id = 3, Name="TownC", CityId = 3 },
-            new Town { Id = 4, Name="TownD", CityId = 4 },
-            new Town { Id = 5, Name="TownE", CityId = 5 },
-            new Town { Id = 6, Name="TownF", CityId = 6 },
+            new() { Id = 1, Name="TownA", CityId = 1 },
+            new() { Id = 2, Name="TownB", CityId = 2 },
+            new() { Id = 3, Name="TownC", CityId = 3 },
+            new() { Id = 4, Name="TownD", CityId = 4 },
+            new() { Id = 5, Name="TownE", CityId = 5 },
+            new() { Id = 6, Name="TownF", CityId = 6 },
         };
     }
 }
