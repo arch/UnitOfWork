@@ -16,7 +16,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     /// <summary>
     /// Defines the interface(s) for unit of work.
     /// </summary>
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.

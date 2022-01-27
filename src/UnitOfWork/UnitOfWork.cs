@@ -20,7 +20,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
     /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
     /// </summary>
     /// <typeparam name="TContext">The type of the db context.</typeparam>
-    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
+    public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext> where TContext : DbContext
     {
         private bool _disposed;
         private Dictionary<Type, object> _repositories;
@@ -233,7 +233,10 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
             return count;
         }
+        
+        public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback) => DbContext.ChangeTracker.TrackGraph(rootEntity, callback);
 
+        IDbContextTransaction IUnitOfWork.BeginTransaction(System.Data.IsolationLevel isolation) => DbContext.Database.BeginTransaction(isolation);
 
 
         /// <summary>
@@ -266,9 +269,36 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
 
             _disposed = true;
         }
+        
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
 
-        public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback) => DbContext.ChangeTracker.TrackGraph(rootEntity, callback);
+            GC.SuppressFinalize(this);
+        }
 
-        IDbContextTransaction IUnitOfWork.BeginTransaction(System.Data.IsolationLevel isolation) => DbContext.Database.BeginTransaction(isolation);
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">The disposing.</param>
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // clear repositories
+                    _repositories?.Clear();
+
+                    // dispose the db context.
+                    await DbContext.DisposeAsync();
+                }
+            }
+
+            _disposed = true;
+        }
     }
 }
