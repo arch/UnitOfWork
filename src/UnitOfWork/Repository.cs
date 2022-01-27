@@ -149,7 +149,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -200,7 +200,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -255,7 +255,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TResult}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TResult}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -309,7 +309,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -367,7 +367,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method default no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -448,14 +448,12 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             {
                 return await orderBy(query).FirstOrDefaultAsync();
             }
-            else
-            {
-                return await query.FirstOrDefaultAsync();
-            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method default no-tracking query.
+        /// Gets the first or default entity based on a predicate, orderBy delegate and include delegate. This method default no-tracking query.
         /// </summary>
         /// <param name="selector">The selector for projection.</param>
         /// <param name="predicate">A function to test each element for a condition.</param>
@@ -499,10 +497,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             {
                 return orderBy(query).Select(selector).FirstOrDefault();
             }
-            else
-            {
-                return query.Select(selector).FirstOrDefault();
-            }
+
+            return query.Select(selector).FirstOrDefault();
         }
 
         /// <inheritdoc />
@@ -539,10 +535,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
             {
                 return await orderBy(query).Select(selector).FirstOrDefaultAsync();
             }
-            else
-            {
-                return await query.Select(selector).FirstOrDefaultAsync();
-            }
+
+            return await query.Select(selector).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -551,21 +545,24 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// <param name="sql">The raw SQL.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => DbSet.FromSqlRaw(sql, parameters);
+        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) 
+            => DbSet.FromSqlRaw(sql, parameters);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>The found entity or null.</returns>
-        public virtual TEntity Find(params object[] keyValues) => DbSet.Find(keyValues);
+        public virtual TEntity Find(params object[] keyValues) 
+            => DbSet.Find(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
         /// </summary>
         /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
         /// <returns>A <see cref="Task{TEntity}" /> that represents the asynchronous insert operation.</returns>
-        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) => DbSet.FindAsync(keyValues);
+        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues) 
+            => DbSet.FindAsync(keyValues);
 
         /// <summary>
         /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
@@ -580,30 +577,16 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public virtual int Count(Expression<Func<TEntity, bool>> predicate = null)
-        {
-            if (predicate == null)
-            {
-                return DbSet.Count();
-            }
-
-            return DbSet.Count(predicate);
-        }
+        public virtual int Count(Expression<Func<TEntity, bool>> predicate = null) 
+            => predicate == null ? DbSet.Count() : DbSet.Count(predicate);
 
         /// <summary>
         /// Gets async the count based on a predicate.
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
-        {
-            if (predicate == null)
-            {
-                return await DbSet.CountAsync();
-            }
-
-            return await DbSet.CountAsync(predicate);
-        }
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null) 
+            => predicate == null ? await DbSet.CountAsync() : await DbSet.CountAsync(predicate);
 
         /// <summary>
         /// Gets the long count based on a predicate.
@@ -713,19 +696,22 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Inserts a new entity synchronously.
         /// </summary>
         /// <param name="entity">The entity to insert.</param>
-        public virtual TEntity Insert(TEntity entity) => DbSet.Add(entity).Entity;
+        public virtual TEntity Insert(TEntity entity) 
+            => DbSet.Add(entity).Entity;
 
         /// <summary>
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public virtual void Insert(params TEntity[] entities) => DbSet.AddRange(entities);
+        public virtual void Insert(params TEntity[] entities) 
+            => DbSet.AddRange(entities);
 
         /// <summary>
         /// Inserts a range of entities synchronously.
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
-        public virtual void Insert(IEnumerable<TEntity> entities) => DbSet.AddRange(entities);
+        public virtual void Insert(IEnumerable<TEntity> entities) 
+            => DbSet.AddRange(entities);
 
         /// <summary>
         /// Inserts a new entity asynchronously.
@@ -746,7 +732,8 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// </summary>
         /// <param name="entities">The entities to insert.</param>
         /// <returns>A <see cref="Task" /> that represents the asynchronous insert operation.</returns>
-        public virtual Task InsertAsync(params TEntity[] entities) => DbSet.AddRangeAsync(entities);
+        public virtual Task InsertAsync(params TEntity[] entities) 
+            => DbSet.AddRangeAsync(entities);
 
         /// <summary>
         /// Inserts a range of entities asynchronously.
@@ -761,31 +748,36 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public virtual void Update(TEntity entity) => DbSet.Update(entity);
+        public virtual void Update(TEntity entity) 
+            => DbSet.Update(entity);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        public virtual void UpdateAsync(TEntity entity) => DbSet.Update(entity);
+        public virtual void UpdateAsync(TEntity entity) 
+            => DbSet.Update(entity);
 
         /// <summary>
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Update(params TEntity[] entities) => DbSet.UpdateRange(entities);
+        public virtual void Update(params TEntity[] entities) 
+            => DbSet.UpdateRange(entities);
 
         /// <summary>
         /// Updates the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Update(IEnumerable<TEntity> entities) => DbSet.UpdateRange(entities);
+        public virtual void Update(IEnumerable<TEntity> entities)
+            => DbSet.UpdateRange(entities);
 
         /// <summary>
         /// Deletes the specified entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        public virtual void Delete(TEntity entity) => DbSet.Remove(entity);
+        public virtual void Delete(TEntity entity) 
+            => DbSet.Remove(entity);
 
         /// <summary>
         /// Deletes the entity by the specified primary key.
@@ -817,19 +809,22 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Delete(params TEntity[] entities) => DbSet.RemoveRange(entities);
+        public virtual void Delete(params TEntity[] entities) 
+            => DbSet.RemoveRange(entities);
 
         /// <summary>
         /// Deletes the specified entities.
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public virtual void Delete(IEnumerable<TEntity> entities) => DbSet.RemoveRange(entities);
+        public virtual void Delete(IEnumerable<TEntity> entities) 
+            => DbSet.RemoveRange(entities);
 
         /// <summary>
         /// Gets all entities. This method is not recommended
         /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        public async Task<IList<TEntity>> GetAllAsync() => await DbSet.ToListAsync();
+        public async Task<IList<TEntity>> GetAllAsync() 
+            => await DbSet.ToListAsync();
 
         /// <summary>
         /// Gets all entities. This method is not recommended
@@ -909,16 +904,17 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         {
             if (ExistsUpdateTimestamp(entity, out var entityForUpdate)) {
                 Update(entityForUpdate);
-            } else {
+            } 
+            else {
                 Insert(entity);
             }
         }
 
-        public virtual void InsertOrUpdate(IEnumerable<TEntity> entities) =>
-            DbContext.BulkInsertOrUpdate(entities.ToList());
+        public virtual void InsertOrUpdate(IEnumerable<TEntity> entities) 
+            => DbContext.BulkInsertOrUpdate(entities.ToList());
 
         /// <summary>
-        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
@@ -964,7 +960,7 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
-        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Gets the <see cref="List{TEntity}"/> based on a predicate, orderBy delegate and page information. This method default no-tracking query.
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="orderBy">A function to order elements.</param>
