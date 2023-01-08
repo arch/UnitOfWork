@@ -1,4 +1,6 @@
-﻿namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Models
+﻿using UnitOfWork.Host.Models;
+
+namespace Arch.EntityFrameworkCore.UnitOfWork.Host.Models
 {
     public class CustomBlogRepository : Repository<Blog>, IRepository<Blog>
     {
