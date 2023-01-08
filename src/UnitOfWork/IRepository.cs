@@ -503,6 +503,28 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         void Delete(IEnumerable<TEntity> entities);
 
         /// <summary>
+        /// Bulk Delete the specified entity.
+        /// </summary>
+        void BulkDelete();
+
+        /// <summary>
+        /// ASync Bulk Delete the specified entity.
+        /// </summary>
+        Task BulkDeleteAsync();
+
+        /// <summary>
+        /// Bulk Update the specified entity.
+        /// <param name="setPropertyCalls">the entity property</param>
+        /// </summary>
+        void BulkUpdate(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls);
+
+        /// <summary>
+        /// Async Bulk Update the specified entity.
+        /// <param name="setPropertyCalls">the entity property</param>
+        /// </summary>
+        Task BulkUpdateAsync(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls);
+
+        /// <summary>
         /// Change entity state for patch method on web api.
         /// </summary>
         /// <param name="entity">The entity.</param>

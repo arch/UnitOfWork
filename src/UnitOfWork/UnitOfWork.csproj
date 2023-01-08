@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A plugin for Microsoft.EntityFrameworkCore to support repository, unit of work patterns, and multiple database with distributed transaction supported.</Description>
-    <VersionPrefix>7.0.0</VersionPrefix>
+    <VersionPrefix>7.1.0</VersionPrefix>
     <Authors>rigofunc;rigofunc@outlook.com;qermezkon@gmail.com</Authors>
     <TargetFramework>net7.0</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -14,11 +14,11 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AikiCo/UnitOfWork</RepositoryUrl>
-    <Version>7.0.0</Version>
+    <Version>7.1.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>8</LangVersion>
-    <PackageVersion>7.0.0</PackageVersion>
+    <PackageVersion>7.1.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <UserSecretsId>cba3a20d-f192-445e-9058-fdbacec3fea3</UserSecretsId>
   </PropertyGroup>

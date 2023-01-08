@@ -1056,6 +1056,29 @@ namespace Arch.EntityFrameworkCore.UnitOfWork
         }
 
         /// <summary>
+        /// Bulk Delete the specified entity.
+        /// </summary>
+        public void BulkDelete()=> _dbSet.ExecuteDelete();
+
+        /// <summary>
+        /// Bulk Delete the specified entity.
+        /// </summary>
+        public async Task BulkDeleteAsync() => await _dbSet.ExecuteDeleteAsync();
+
+
+        /// <summary>
+        /// Bulk Update the specified entity.
+        /// </summary>
+        /// <param name="setPropertyCalls">the entity property</param>
+        public void BulkUpdate(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls) => _dbSet.ExecuteUpdate(setPropertyCalls);
+
+        /// <summary>
+        /// Async Bulk Update the specified entity.
+        /// <param name="setPropertyCalls">the entity property</param>
+        /// </summary>
+        public async Task BulkUpdateAsync(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls) => await _dbSet.ExecuteUpdateAsync(setPropertyCalls);
+
+        /// <summary>
         /// Change entity state for patch method on web api.
         /// </summary>
         /// <param name="entity">The entity.</param>
